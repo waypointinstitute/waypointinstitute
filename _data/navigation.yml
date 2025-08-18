@@ -1,0 +1,14 @@
+header:
+  - {label: "Explore", url: "/explore/"}
+  - {label: "Essays", url: "/essays/"}
+  - {label: "Research", url: "/research/"}
+  - {label: "Projects", url: "/projects/"}
+  - {label: "People", url: "/people/"}
+  - {label: "Publications", url: "/publications/"}
+  - {label: "Newsletter", url: "/newsletter/"}
+  - {label: "Donate", url: "/donate/"}
+
+footer:
+  - {label: "About", url: "/about/"}
+  - {label: "Contact", url: "/contact/"}
+  - {label: "RSS", url: "/feed.xml"}
