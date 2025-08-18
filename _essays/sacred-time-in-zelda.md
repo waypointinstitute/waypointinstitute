@@ -7,4 +7,4 @@ tags: [zelda, sacred-time, theology]
 status: published
 ---
 
-Body forthcoming.
+This is a working note for the larger Waypoint thesis: sacred time is not a borrowed veneer but the series’ internal metaphysics. I.e., time is sacrally **mediated** (temples, altars, songs) and **structured** (cycles, returns, restorations). That structure regulates causality in-world without importing external dogmatics. This page will expand into a full essay; for now, it functions as a reference node in the explorer.
