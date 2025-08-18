@@ -1,0 +1,54 @@
+name: Mirror Substack Posts
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "15 9 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - run: npm install jsdom@22 @mozilla/readability@0.4.4 node-fetch@2
+
+      - run: |
+          node -e "
+            const fs=require('fs');
+            const fetch=require('node-fetch');
+            const {JSDOM}=require('jsdom');
+            const {Readability}=require('@mozilla/readability');
+
+            const urls=JSON.parse(fs.readFileSync('_data/substack_sources.json'));
+            const out=[];
+
+            (async ()=>{
+              for(const url of urls){
+                const res=await fetch(url);
+                const html=await res.text();
+                const doc=new JSDOM(html,{url});
+                const reader=new Readability(doc.window.document);
+                const article=reader.parse();
+                out.push({
+                  title: article.title,
+                  url,
+                  content: article.content
+                });
+              }
+              fs.writeFileSync('_data/substack_mirrors.json', JSON.stringify(out,null,2));
+            })();
+          "
+
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add _data/substack_mirrors.json
+          git diff --cached --quiet || git commit -m "Update mirrored Substack posts"
+          git push
