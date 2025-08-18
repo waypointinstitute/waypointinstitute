@@ -1,0 +1,33 @@
+---
+layout: default
+title: Home
+---
+
+<section>
+  <h1>Waypoint Institute</h1>
+  <p class="lead">Exploring the sacred across texts, worlds, and media — with scholarly rigor and playful curiosity.</p>
+  <p><a class="button" href="{{ '/explore/' | relative_url }}">Enter the Explorer</a></p>
+</section>
+
+<section>
+  <h2>Latest Essays</h2>
+  {% assign latest_essays = site.essays | where_exp:'i',"i.status != 'draft'" | sort: 'date' | reverse | slice: 0,3 %}
+  {% include list.html items=latest_essays %}
+</section>
+
+<section>
+  <h2>Latest Research</h2>
+  {% assign latest_research = site.research | where_exp:'i',"i.status != 'draft'" | sort: 'date' | reverse | slice: 0,3 %}
+  {% include list.html items=latest_research %}
+</section>
+
+<section>
+  <h2>Projects</h2>
+  {% assign featured_projects = site.projects | where: 'featured', true %}
+  {% if featured_projects.size > 0 %}
+    {% include list.html items=featured_projects %}
+  {% else %}
+    {% assign some_projects = site.projects | sort:'date' | reverse | slice: 0,3 %}
+    {% include list.html items=some_projects %}
+  {% endif %}
+</section>
