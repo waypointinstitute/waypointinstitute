@@ -41,3 +41,9 @@ async function getHTML(url){
   fs.writeFileSync(OUT, JSON.stringify(out, null, 2));
   console.log("[mirror] Wrote", out.length, "posts →", OUT);
 })();
+fs.writeFileSync(OUT, JSON.stringify(results, null, 2));
+console.log(`[mirror] Wrote ${results.length} mirrored posts → ${OUT}`);
+if (results.length === 0) {
+  console.error("[mirror] No posts extracted. Failing the job so we notice.");
+  process.exit(2);
+}
