@@ -22,7 +22,6 @@ jobs:
           git rev-parse --abbrev-ref HEAD
           git rev-parse HEAD
           ls -la
-          echo "---- tree ----"
           ls -la scripts || true
           ls -la _data || true
 
@@ -41,7 +40,7 @@ jobs:
       - name: Install deps
         run: npm install jsdom@22 @mozilla/readability@0.4.4 node-fetch@2
 
-      # FOR NOW: sanity writer (proves pipeline). Replace with real script after it succeeds once.
+      # Sanity writer: proves pipeline by writing a fake post
       - name: Run sanity writer
         run: |
           node -e "
