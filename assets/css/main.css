@@ -29,6 +29,13 @@ h1,h2,h3{line-height:1.2;margin:1rem 0 .5rem}
 .substack-html img{max-width:100%;height:auto}
 .substack-html iframe{max-width:100%}
 .substack-html{overflow:hidden}
+.substack-feed{margin-top:1rem}
+.substack-item{border:1px solid #222;background:#141418;border-radius:12px;padding:1rem;margin:1rem 0}
+.substack-title{display:flex;gap:.6rem;align-items:baseline;margin:0 0 .5rem}
+.substack-title .substack-source{font-size:.9rem;color:#9aa}
+.substack-html img{max-width:100%;height:auto}
+.substack-html iframe{max-width:100%}
+.substack-html figure{margin:1rem 0}
 
 
 /* Scroll reveal */
