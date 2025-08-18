@@ -1,0 +1,6 @@
+<section class="list">
+  {% assign items = include.items | where_exp: "i", "i.status != 'draft'" %}
+  {% for item in items %}
+    {% include card.html item=item %}
+  {% endfor %}
+</section>
