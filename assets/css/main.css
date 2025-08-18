@@ -22,3 +22,8 @@ h1,h2,h3{line-height:1.2;margin:1rem 0 .5rem}
 .card-meta{color:#9aa; font-size:.9rem}
 .list{display:grid;grid-template-columns:repeat(auto-fill, minmax(260px,1fr));gap:1rem}
 .item .item-body{max-width:var(--maxw)}
+
+/* Scroll reveal */
+.reveal{opacity:0;transform:translateY(10px);transition:opacity .5s ease, transform .5s ease}
+.reveal-in{opacity:1;transform:translateY(0)}
+
