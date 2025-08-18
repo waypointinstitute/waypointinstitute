@@ -1,0 +1,10 @@
+<article class="card">
+  <a class="card-link" href="{{ include.item.url | relative_url }}">
+    <h3 class="card-title">{{ include.item.title }}</h3>
+    {% if include.item.summary %}<p class="card-summary">{{ include.item.summary }}</p>{% endif %}
+    <p class="card-meta">
+      {% if include.item.date %}{{ include.item.date | date: "%B %-d, %Y" }}{% endif %}
+      {% if include.item.author %} · {{ include.item.author }}{% endif %}
+    </p>
+  </a>
+</article>
