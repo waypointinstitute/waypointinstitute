@@ -1,14 +1,62 @@
-// sanity test: write a known object so newsletter can render
-const fs = require("fs");
-const path = require("path");
-const OUT = path.join("_data", "substack_mirrors.json");
+name: Mirror Substack Posts
 
-const results = [{
-  title: "Sanity Post",
-  url: "https://example.com",
-  date: "2025-08-10T00:00:00Z",
-  content: "<p>If you see this, mirror pipeline is wired.</p>"
-}];
+on:
+  workflow_dispatch:
 
-fs.writeFileSync(OUT, JSON.stringify(results, null, 2));
-console.log("[mirror] wrote", results.length, "post(s) →", OUT);
+permissions:
+  contents: write
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (main, full history)
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Show repo state
+        run: |
+          pwd
+          git rev-parse --abbrev-ref HEAD
+          git rev-parse HEAD
+          ls -la
+          echo "---- tree ----"
+          ls -la scripts || true
+          ls -la _data || true
+
+      - name: Show script the runner will execute
+        run: |
+          echo "=== scripts/mirror.js (runner copy) ==="
+          nl -ba scripts/mirror.js | sed -n '1,200p'
+          echo "=== grep JSON.stringify ==="
+          grep -n "JSON.stringify" scripts/mirror.js || true
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install deps
+        run: npm install jsdom@22 @mozilla/readability@0.4.4 node-fetch@2
+
+      # FOR NOW: sanity writer (proves pipeline). Replace with real script after it succeeds once.
+      - name: Run sanity writer
+        run: |
+          node -e "
+            const fs=require('fs');
+            const path=require('path');
+            const OUT=path.join('_data','substack_mirrors.json');
+            const results=[{title:'Sanity Post',url:'https://example.com',date:'2025-08-10T00:00:00Z',content:'<p>If you see this, pipeline is wired.</p>'}];
+            fs.writeFileSync(OUT, JSON.stringify(results,null,2));
+            console.log('WROTE', results.length, '→', OUT);
+          "
+
+      - name: Commit mirrored data (if changed)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add _data/substack_mirrors.json
+          git diff --cached --quiet || git commit -m "Mirror: write sanity post"
+          git push
