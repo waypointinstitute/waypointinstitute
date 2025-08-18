@@ -1,7 +1,7 @@
 title: "Waypoint Institute"
 description: "Exploring the sacred in a digital age."
-url: ""                    # set to https://waypointinstitute.org later
-baseurl: ""                # keep empty for root; set if using subpath
+url: "https://waypointinstitute.github.io"
+baseurl: "/waypointinstitute"
 timezone: America/New_York
 markdown: kramdown
 permalink: pretty
