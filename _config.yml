@@ -1,0 +1,52 @@
+title: "Waypoint Institute"
+description: "Exploring the sacred in a digital age."
+url: ""                    # set to https://waypointinstitute.org later
+baseurl: ""                # keep empty for root; set if using subpath
+timezone: America/New_York
+markdown: kramdown
+permalink: pretty
+
+# GitHub Pages–compatible plugins
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+# Collections
+collections:
+  essays:
+    output: true
+    permalink: /essays/:name/
+  research:
+    output: true
+    permalink: /research/:name/
+  projects:
+    output: true
+    permalink: /projects/:name/
+  people:
+    output: true
+    permalink: /people/:name/
+  publications:
+    output: true
+    permalink: /publications/:name/
+
+# Defaults reduce front matter noise
+defaults:
+  - scope: {path: ""}                 # site-wide
+    values:
+      layout: default
+  - scope: {path: "", type: essays}
+    values: {layout: item}
+  - scope: {path: "", type: research}
+    values: {layout: item}
+  - scope: {path: "", type: projects}
+    values: {layout: project}
+  - scope: {path: "", type: people}
+    values: {layout: person}
+  - scope: {path: "", type: publications}
+    values: {layout: item}
+
+# Exclusions
+exclude:
+  - Gemfile
+  - Gemfile.lock
