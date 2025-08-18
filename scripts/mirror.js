@@ -32,7 +32,6 @@ async function extractFrom(url){
   let parsed = null;
   try { parsed = new Readability(dom.window.document).parse(); } catch {}
 
-  // canonical fallback
   if (!parsed || !parsed.content) {
     const canon = dom.window.document.querySelector('meta[property="og:url"]')?.getAttribute("content");
     if (canon && canon !== url) {
@@ -42,7 +41,7 @@ async function extractFrom(url){
       try { parsed = new Readability(dom.window.document).parse(); } catch {}
     }
   }
-  // AMP fallback
+
   if (!parsed || !parsed.content) {
     const current = dom.window.location.href;
     const amp = current.includes("?") ? current + "&output=amp" : current + "?output=amp";
@@ -51,15 +50,18 @@ async function extractFrom(url){
     dom = new JSDOM(html, { url: amp });
     try { parsed = new Readability(dom.window.document).parse(); } catch {}
   }
+
   if (!parsed || !parsed.content) throw new Error("No article content found.");
 
   const title =
     parsed.title ||
     dom.window.document.querySelector('meta[property="og:title"]')?.getAttribute("content") ||
     dom.window.document.title || "";
+
   const date =
     dom.window.document.querySelector('meta[property="article:published_time"]')?.getAttribute("content") ||
     dom.window.document.querySelector("time[datetime]")?.getAttribute("datetime") || "";
+
   const content = absolutize(parsed.content, dom.window.location.href);
 
   return { title, url: dom.window.location.href, date, content };
@@ -72,7 +74,7 @@ async function extractFrom(url){
   catch(e){ console.error(`Invalid JSON in ${SRC}: ${e.message}`); process.exit(1); }
   if (!Array.isArray(urls) || urls.length === 0) { console.error(`${SRC} must be a non-empty array of URLs.`); process.exit(1); }
 
-  const results = [];  // <-- singular source of truth
+  const results = [];
   for (const u of urls) {
     try {
       const post = await extractFrom(u);
