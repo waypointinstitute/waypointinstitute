@@ -10,18 +10,6 @@ jobs:
   mirror:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout (main, full history)name: Mirror Substack Posts
-
-on:
-  workflow_dispatch:
-
-permissions:
-  contents: write
-
-jobs:
-  mirror:
-    runs-on: ubuntu-latest
-    steps:
       - name: Checkout (main, full history)
         uses: actions/checkout@v4
         with:
@@ -32,10 +20,8 @@ jobs:
         run: |
           echo "HEAD:" $(git rev-parse HEAD)
           ls -la
-          echo "---- scripts ----"
-          ls -la scripts || true
-          echo "---- _data ----"
-          ls -la _data || true
+          echo "---- scripts ----"; ls -la scripts || true
+          echo "---- _data ----";   ls -la _data   || true
 
       - name: Show script the runner will execute
         run: |
@@ -56,53 +42,4 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add _data/substack_mirrors.json
           git diff --cached --quiet || git commit -m "Mirror: write sanity post (v2)"
-          git push
-
-        uses: actions/checkout@v4
-        with:
-          ref: main
-          fetch-depth: 0
-
-      - name: Show repo state
-        run: |
-          pwd
-          git rev-parse --abbrev-ref HEAD
-          git rev-parse HEAD
-          ls -la
-          ls -la scripts || true
-          ls -la _data || true
-
-      - name: Show script the runner will execute
-        run: |
-          echo "=== scripts/mirror.js (runner copy) ==="
-          nl -ba scripts/mirror.js | sed -n '1,200p'
-          echo "=== grep JSON.stringify ==="
-          grep -n "JSON.stringify" scripts/mirror.js || true
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-
-      - name: Install deps
-        run: npm install jsdom@22 @mozilla/readability@0.4.4 node-fetch@2
-
-      # Sanity writer: proves pipeline by writing a fake post
-      - name: Run sanity writer
-        run: |
-          node -e "
-            const fs=require('fs');
-            const path=require('path');
-            const OUT=path.join('_data','substack_mirrors.json');
-            const results=[{title:'Sanity Post',url:'https://example.com',date:'2025-08-10T00:00:00Z',content:'<p>If you see this, pipeline is wired.</p>'}];
-            fs.writeFileSync(OUT, JSON.stringify(results,null,2));
-            console.log('WROTE', results.length, '→', OUT);
-          "
-
-      - name: Commit mirrored data (if changed)
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add _data/substack_mirrors.json
-          git diff --cached --quiet || git commit -m "Mirror: write sanity post"
           git push
