@@ -34,7 +34,7 @@ async function extractFrom(url){
   let parsed = null;
   try { parsed = new Readability(dom.window.document).parse(); } catch {}
 
-  // fallback to canonical link if present
+  // fallback to canonical
   if (!parsed || !parsed.content) {
     const canon = dom.window.document.querySelector('meta[property="og:url"]')?.getAttribute("content");
     if (canon && canon !== url) {
@@ -60,13 +60,11 @@ async function extractFrom(url){
   const title =
     parsed.title ||
     dom.window.document.querySelector('meta[property="og:title"]')?.getAttribute("content") ||
-    dom.window.document.title ||
-    "";
+    dom.window.document.title || "";
 
   const date =
     dom.window.document.querySelector('meta[property="article:published_time"]')?.getAttribute("content") ||
-    dom.window.document.querySelector("time[datetime]")?.getAttribute("datetime") ||
-    "";
+    dom.window.document.querySelector("time[datetime]")?.getAttribute("datetime") || "";
 
   const content = absolutize(parsed.content, dom.window.location.href);
 
@@ -74,19 +72,13 @@ async function extractFrom(url){
 }
 
 (async ()=>{
-  if (!fs.existsSync(SRC)) {
-    console.error(`Missing ${SRC}`);
-    process.exit(1);
-  }
+  if (!fs.existsSync(SRC)) { console.error(`Missing ${SRC}`); process.exit(1); }
   let urls;
   try { urls = JSON.parse(fs.readFileSync(SRC, "utf8")); }
   catch(e){ console.error(`Invalid JSON in ${SRC}: ${e.message}`); process.exit(1); }
-  if (!Array.isArray(urls) || urls.length === 0) {
-    console.error(`${SRC} must be a non-empty array of URLs.`);
-    process.exit(1);
-  }
+  if (!Array.isArray(urls) || urls.length === 0) { console.error(`${SRC} must be a non-empty array of URLs.`); process.exit(1); }
 
-  const results = []; // ← consistent name
+  const results = [];  // ← this is what we write at the end
   for (const u of urls) {
     try {
       const post = await extractFrom(u);
@@ -99,8 +91,5 @@ async function extractFrom(url){
 
   fs.writeFileSync(OUT, JSON.stringify(results, null, 2));
   console.log(`[mirror] Wrote ${results.length} mirrored posts → ${OUT}`);
-  if (results.length === 0) {
-    console.error("[mirror] No posts extracted. Failing the job so we notice.");
-    process.exit(2);
-  }
+  if (results.length === 0) { console.error("[mirror] No posts extracted. Failing."); process.exit(2); }
 })();
