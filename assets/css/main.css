@@ -22,6 +22,14 @@ h1,h2,h3{line-height:1.2;margin:1rem 0 .5rem}
 .card-meta{color:#9aa; font-size:.9rem}
 .list{display:grid;grid-template-columns:repeat(auto-fill, minmax(260px,1fr));gap:1rem}
 .item .item-body{max-width:var(--maxw)}
+.substack-feed{margin-top:1rem}
+.substack-item{border:1px solid #222;background:#141418;border-radius:12px;padding:1rem;margin:1rem 0}
+.substack-title{margin:0 0 .25rem}
+.substack-date{color:#9aa;font-size:.9rem;margin:.1rem 0 .6rem}
+.substack-html img{max-width:100%;height:auto}
+.substack-html iframe{max-width:100%}
+.substack-html{overflow:hidden}
+
 
 /* Scroll reveal */
 .reveal{opacity:0;transform:translateY(10px);transition:opacity .5s ease, transform .5s ease}
