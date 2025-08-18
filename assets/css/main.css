@@ -1,0 +1,24 @@
+:root{
+  --bg:#0b0b0c; --text:#e9e9ee; --muted:#b9b9c2; --card:#141418; --brand:#d1b464; --accent:#6fb0ff;
+  --maxw: 70ch;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:1100px;margin:0 auto;padding:1.2rem}
+.site-header,.site-footer{background:#0e0e12;border-bottom:1px solid #202028}
+.site-footer{border-top:1px solid #202028;border-bottom:none;margin-top:3rem}
+.brand{font-weight:700;color:var(--brand)}
+.nav a{margin-right:1rem;color:var(--text);opacity:.9}
+.content{padding-top:1.2rem}
+h1,h2,h3{line-height:1.2;margin:1rem 0 .5rem}
+.lead{color:var(--muted)}
+.item-header .badge{display:inline-block;border:1px solid #333;padding:.15rem .5rem;border-radius:.5rem;color:var(--muted);font-size:.85rem}
+.card{background:var(--card);border:1px solid #222;border-radius:12px;padding:1rem;margin:.75rem 0;transition:transform .2s ease, box-shadow .2s ease}
+.card:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,0,0,.35)}
+.card-title{margin:.2rem 0 .3rem}
+.card-summary{color:var(--muted);margin:.3rem 0 .4rem}
+.card-meta{color:#9aa; font-size:.9rem}
+.list{display:grid;grid-template-columns:repeat(auto-fill, minmax(260px,1fr));gap:1rem}
+.item .item-body{max-width:var(--maxw)}
