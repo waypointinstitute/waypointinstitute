@@ -1,0 +1,8 @@
+[
+  { "from": "agora",       "to": "concept-lab" },
+  { "from": "concept-lab", "to": "pathways" },
+  { "from": "pathways",    "to": "portal" },
+  { "from": "portal",      "to": "atrium" },
+  { "from": "atrium",      "to": "scriptorium" },
+  { "from": "scriptorium", "to": "agora" }
+]
