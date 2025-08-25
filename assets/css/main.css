@@ -42,3 +42,67 @@ h1,h2,h3{line-height:1.2;margin:1rem 0 .5rem}
 .reveal{opacity:0;transform:translateY(10px);transition:opacity .5s ease, transform .5s ease}
 .reveal-in{opacity:1;transform:translateY(0)}
 
+/* ===== Explorer ===== */
+.map { position: relative; margin-top: 1.25rem; }
+.map-lines {
+  position:absolute; inset:0; width:100%; height:60vh; pointer-events:none;
+}
+.map-lines .conn { stroke: rgba(90,165,255,.3); stroke-width:.4; stroke-dasharray: 2 1; }
+
+#stars { position:absolute; inset:0; pointer-events:none; }
+#stars .star {
+  position:absolute; background:#fff; border-radius:50%;
+  opacity:.6; animation: twinkle var(--tw,3s) ease-in-out infinite;
+}
+@keyframes twinkle { 0%,100% { opacity:.2 } 50% { opacity:1 } }
+
+.desert {
+  position:absolute; left:0; right:0; bottom:0; height:33%;
+  background: linear-gradient(to top, rgba(180,120,40,.25), rgba(180,120,40,.12), transparent);
+  pointer-events:none;
+}
+
+.map-canvas {
+  position:relative; height:60vh; border:1px solid #222; border-radius:16px;
+  background: radial-gradient(1200px 600px at 30% 20%, #171a20, #0d0f11);
+  overflow:hidden;
+}
+
+.waypoint {
+  position:absolute; left:calc(var(--x) * 1%); top:calc(var(--y) * 1%);
+  transform:translate(-50%,-50%); text-decoration:none;
+}
+.waypoint .node {
+  width:84px; height:84px; display:grid; place-items:center; border-radius:999px;
+  background: linear-gradient(135deg, var(--c1), var(--c2));
+  border:2px solid rgba(255,255,255,.15);
+  box-shadow: 0 12px 28px rgba(0,0,0,.35);
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.waypoint:hover .node { transform: scale(1.08); box-shadow: 0 18px 40px rgba(0,0,0,.5); }
+.waypoint i { width:34px; height:34px; color:#fff; }
+
+.waypoint .label {
+  position:absolute; left:50%; top:100%; transform:translate(-50%, .5rem) scale(.98);
+  background: rgba(0,0,0,.45); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  color:#e4e8ef; border:1px solid rgba(255,255,255,.15); border-radius:10px;
+  padding:.35rem .6rem; min-width: 160px; text-align:center;
+  opacity:0; transition: opacity .15s ease, transform .15s ease;
+}
+.waypoint:hover .label { opacity:1; transform:translate(-50%, .5rem) scale(1); }
+.waypoint .label strong { display:block; font-weight:600; }
+.waypoint .label em { display:block; opacity:.85; font-style:normal; font-size:.9em; }
+
+.hud { margin-top:1rem; text-align:center; }
+.hud .btn {
+  display:inline-flex; align-items:center; gap:.5rem;
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+  color:#fff; padding:.75rem 1.1rem; border-radius:12px; text-decoration:none;
+  border:1px solid rgba(255,255,255,.15);
+  box-shadow: 0 10px 24px rgba(0,0,0,.35);
+}
+.hud .btn:hover { filter: brightness(1.05); }
+@media (prefers-reduced-motion: reduce) {
+  .waypoint .node, .waypoint .label { transition:none; }
+}
+
