@@ -1,0 +1,8 @@
+[
+  { "id": "agora",        "title": "Agora",            "href": "/agora/",        "desc": "Essays & Dispatches", "x": 20, "y": 30, "c1": "#fbbf24", "c2": "#f97316", "icon": "users" },
+  { "id": "concept-lab",  "title": "Concept Lab",      "href": "/concept-lab/",  "desc": "Ideas & Frameworks",  "x": 70, "y": 25, "c1": "#a78bfa", "c2": "#ec4899", "icon": "flask-conical" },
+  { "id": "pathways",     "title": "Reading Pathways", "href": "/pathways/",     "desc": "Guided Studies",      "x": 50, "y": 45, "c1": "#4ade80", "c2": "#10b981", "icon": "map" },
+  { "id": "portal",       "title": "Portal",           "href": "/portal/",       "desc": "Share Your Experience","x": 30, "y": 65, "c1": "#60a5fa", "c2": "#06b6d4", "icon": "sparkles" },
+  { "id": "atrium",       "title": "Research Atrium",  "href": "/atrium/",       "desc": "Data & Insights",     "x": 75, "y": 60, "c1": "#818cf8", "c2": "#3b82f6", "icon": "bar-chart-3" },
+  { "id": "scriptorium",  "title": "Scriptorium",      "href": "/scriptorium/",  "desc": "Sacred Library",       "x": 45, "y": 80, "c1": "#fb7185", "c2": "#ec4899", "icon": "book-open" }
+]
