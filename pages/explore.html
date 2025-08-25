@@ -1,0 +1,55 @@
+---
+layout: page
+title: Explorer
+permalink: /explore/
+---
+
+<section class="map">
+  <!-- connection lines -->
+  <svg class="map-lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+    {% assign rooms = site.data.rooms %}
+    {% for c in site.data.connections %}
+      {% assign A = rooms | where: 'id', c.from | first %}
+      {% assign B = rooms | where: 'id', c.to   | first %}
+      {% if A and B %}
+        <line x1="{{ A.x }}" y1="{{ A.y }}" x2="{{ B.x }}" y2="{{ B.y }}" class="conn" />
+      {% endif %}
+    {% endfor %}
+  </svg>
+
+  <!-- background stars (JS will generate) -->
+  <div id="stars"></div>
+
+  <!-- sand/desert overlay -->
+  <div class="desert"></div>
+
+  <!-- nodes -->
+  <div class="map-canvas">
+    {% for r in rooms %}
+      <a class="waypoint"
+         href="{{ r.href | relative_url }}"
+         style="--x: {{ r.x }}; --y: {{ r.y }}; --c1: {{ r.c1 }}; --c2: {{ r.c2 }};"
+         data-title="{{ r.title }}" data-desc="{{ r.desc }}" data-icon="{{ r.icon }}">
+        <span class="node"><i data-lucide="{{ r.icon }}"></i></span>
+        <span class="label">
+          <strong>{{ r.title }}</strong>
+          <em>{{ r.desc }}</em>
+        </span>
+      </a>
+    {% endfor %}
+  </div>
+
+  <!-- HUD / CTA -->
+  <div class="hud">
+    <h3 id="hud-title">Navigate the Sacred</h3>
+    <p id="hud-desc">Choose your path through the constellation of knowledge.</p>
+    <p class="cta">
+      <a class="btn" href="{{ '/navigator/' | relative_url }}">
+        <i data-lucide="compass"></i> Guide Me
+      </a>
+    </p>
+  </div>
+</section>
+
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<script src="{{ '/assets/js/explore.js' | relative_url }}"></script>
