@@ -1,0 +1,63 @@
+---
+layout: page
+title: Concept Lab
+permalink: /concept-lab/
+---
+
+<section class="concepts">
+  <div class="text-center mb-8">
+    <div class="inline-flex items-center gap-3 mb-3">
+      <span class="rounded-full" style="display:grid;place-items:center;width:48px;height:48px;background:linear-gradient(135deg,#a78bfa,#ec4899);border:1px solid rgba(255,255,255,.2);">
+        <i data-lucide="flask-conical" style="width:22px;height:22px;color:#fff"></i>
+      </span>
+      <h1 class="font-serif" style="font-size:2rem;font-weight:700">Concept Lab</h1>
+    </div>
+    <p style="opacity:.8">Ideas, frameworks, and definitions to anchor your study</p>
+  </div>
+
+  <!-- Filters -->
+  <div class="card" style="margin-bottom:1rem">
+    <div style="display:grid;gap:.6rem;grid-template-columns:1fr;align-items:center">
+      <div style="position:relative">
+        <i data-lucide="search" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);width:18px;height:18px;opacity:.6"></i>
+        <input id="cl-search" placeholder="Search concepts…" style="width:100%;padding:.6rem .75rem .6rem 2rem;background:#0f1115;border:1px solid #222;border-radius:10px;color:#e8e8ec">
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem">
+        <select id="cl-status" style="background:#0f1115;border:1px solid #222;border-radius:10px;color:#e8e8ec;padding:.55rem .6rem">
+          <option value="all">All</option>
+          <option value="published">Published</option>
+          <option value="draft">Draft</option>
+        </select>
+        <select id="cl-tag" style="background:#0f1115;border:1px solid #222;border-radius:10px;color:#e8e8ec;padding:.55rem .6rem">
+          <option value="all">All tags</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grid -->
+  <div id="cl-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem"></div>
+
+  <!-- Modal -->
+  <div id="cl-modal" class="cl-modal" hidden>
+    <div class="cl-modal__backdrop"></div>
+    <div class="cl-modal__dialog card">
+      <div class="cl-modal__head">
+        <div>
+          <h2 id="cl-title" class="font-serif" style="margin:0 0 .25rem"></h2>
+          <div id="cl-tags" class="muted" style="display:flex;flex-wrap:wrap;gap:.35rem"></div>
+        </div>
+        <button id="cl-close" class="btn-outline" style="white-space:nowrap">Close</button>
+      </div>
+      <div id="cl-body" class="cl-body"></div>
+    </div>
+  </div>
+</section>
+
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+<script>
+  window.CONCEPTS_DATA = {{ site.data.concepts | jsonify }};
+</script>
+
+<script src="{{ '/assets/js/concepts.js' | relative_url }}"></script>
