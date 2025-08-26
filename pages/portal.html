@@ -14,6 +14,14 @@ permalink: /portal/
     </div>
     <p style="opacity:.8">Share your sacred encounters to advance our understanding.</p>
   </div>
+<div class="card" style="margin:1rem auto;max-width:720px">
+  <p class="muted" style="margin:.25rem 0 .75rem">
+    Submissions are currently collected via Google Forms and stored in Google Sheets.
+  </p>
+  <a id="portal-gform-link" class="btn" href="#" target="_blank" rel="noopener">
+    Open the Submission Form
+  </a>
+</div>
 
   <!-- Progress -->
   <div class="card" style="margin-bottom:1rem">
@@ -172,3 +180,11 @@ permalink: /portal/
 
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 <script src="{{ '/assets/js/portal.js' | relative_url }}"></script>
+
+<script>
+  window.PORTAL_CONFIG = {
+    endpoint: "",              // keep blank (no JSON post)
+    method: "POST",
+    externalFormUrl: "https://docs.google.com/forms/d/e/PLACEHOLDER/viewform"  // <-- replace when ready
+  };
+</script>
