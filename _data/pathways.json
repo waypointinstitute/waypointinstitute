@@ -1,0 +1,55 @@
+[
+  {
+    "id": "intro-mysticism",
+    "title": "Introduction to Mysticism",
+    "summary": "A gentle entry into classic mystical texts and practices.",
+    "theme": "mysticism",
+    "difficulty": "intro",
+    "estimated_minutes": 60,
+    "steps": [
+      {
+        "title": "What is Mysticism?",
+        "estimated_minutes": 10,
+        "content_html": "<p>Read an overview of mystical theology and its main aims (union, illumination, purgation).</p>",
+        "book_references": ["McGinn, <em>The Foundations of Mysticism</em>"]
+      },
+      {
+        "title": "Lectio Divina Basics",
+        "estimated_minutes": 15,
+        "content_html": "<p>Practice <em>lectio</em> on Psalm 27. Keep brief notes.</p>",
+        "book_references": ["Guigo II, <em>The Ladder of Monks</em>"]
+      },
+      {
+        "title": "Encounter Accounts",
+        "estimated_minutes": 20,
+        "content_html": "<p>Read 1–2 anonymized accounts in the Atrium and note recurring features.</p>"
+      }
+    ]
+  },
+  {
+    "id": "patristics-ascetical",
+    "title": "Patristic Ascetical Theology",
+    "summary": "From the desert to the city: early Christian frameworks of transformation.",
+    "theme": "patristics",
+    "difficulty": "intermediate",
+    "estimated_minutes": 90,
+    "steps": [
+      {
+        "title": "The Desert Ideal",
+        "estimated_minutes": 20,
+        "content_html": "<p>Selections from the <em>Apophthegmata Patrum</em> on watchfulness and humility.</p>"
+      },
+      {
+        "title": "Athanasius & Antony",
+        "estimated_minutes": 25,
+        "content_html": "<p>Read <em>Vita Antonii</em> chs. 1–14; chart temptations vs. responses.</p>",
+        "book_references": ["Athanasius, <em>Life of Antony</em>"]
+      },
+      {
+        "title": "Urban Monasticism",
+        "estimated_minutes": 25,
+        "content_html": "<p>Basil’s <em>Longer Rules</em> on community & labor.</p>"
+      }
+    ]
+  }
+]
