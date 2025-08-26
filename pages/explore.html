@@ -98,6 +98,10 @@ permalink: /explore/
   .hub-wrap::before{ display:none }
 }
 </style>
+// radius relative to viewport width; clamp for responsiveness
+const baseR = rect.width * 0.22;
+const isDesktop = window.matchMedia('(min-width:900px)').matches;
+const r = Math.max(130, Math.min(baseR * (isDesktop ? 1.06 : 1), 280));
 
 <script>
 const DESTS = [
