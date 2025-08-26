@@ -4,76 +4,166 @@ title: Explore
 permalink: /explore/
 ---
 
-<main class="explore">
-  <section class="explore-hero">
-    <!-- Centered transparent logo -->
-    <img class="explore-logo" src="{{ '/assets/logo.png' | relative_url }}" alt="Waypoint Institute compass">
+<main class="explore-hub">
+  <section class="hub-wrap">
+    <!-- your transparent logo; cache-busted on deploy -->
+    <img class="hub-logo" src="{{ '/assets/logo.png?v=' | append: site.github.build_revision | relative_url }}" alt="Waypoint Institute logo">
 
-    <!-- Orb ring (8 points) -->
-    <ul class="orb-ring" style="--R: clamp(140px, 24vw, 240px);">
-      <!-- Top (−90°) -->
-      <li style="--a:-90deg">
-        <a class="orb" href="{{ '/pathways/' | relative_url }}">
-          <span class="orb-ico">🗺️</span>
-          <span class="orb-label">Pathways</span>
-        </a>
-      </li>
+    <!-- spoke layer -->
+    <svg class="hub-spokes" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg>
 
-      <!-- Top-right (−45°) -->
-      <li style="--a:-45deg">
-        <a class="orb" href="{{ '/scriptorium/' | relative_url }}">
-          <span class="orb-ico">📖</span>
-          <span class="orb-label">Scriptorium</span>
-        </a>
-      </li>
+    <!-- orbs (we’ll position them via JS using CSS transforms) -->
+    <ul class="hub-orbs" id="hub-orbs"></ul>
 
-      <!-- Right (0°) -->
-      <li style="--a:0deg">
-        <a class="orb" href="{{ '/atrium/' | relative_url }}">
-          <span class="orb-ico">📊</span>
-          <span class="orb-label">Atrium</span>
-        </a>
-      </li>
-
-      <!-- Bottom-right (45°) -->
-      <li style="--a:45deg">
-        <a class="orb" href="{{ '/portal/' | relative_url }}">
-          <span class="orb-ico">✨</span>
-          <span class="orb-label">Portal</span>
-        </a>
-      </li>
-
-      <!-- Bottom (90°) — placeholder -->
-      <li style="--a:90deg">
-        <a class="orb orb--disabled" href="#" aria-disabled="true">
-          <span class="orb-ico">🧭</span>
-          <span class="orb-label">Coming soon</span>
-        </a>
-      </li>
-
-      <!-- Bottom-left (135°) -->
-      <li style="--a:135deg">
-        <a class="orb" href="{{ '/agora/' | relative_url }}">
-          <span class="orb-ico">👥</span>
-          <span class="orb-label">Agora</span>
-        </a>
-      </li>
-
-      <!-- Left (180°) -->
-      <li style="--a:180deg">
-        <a class="orb" href="{{ '/concept-lab/' | relative_url }}">
-          <span class="orb-ico">🧪</span>
-          <span class="orb-label">Concept Lab</span>
-        </a>
-      </li>
-
-      <!-- Top-left (−135°) — placeholder -->
-      <li style="--a:-135deg">
-        <a class="orb orb--disabled" href="#" aria-disabled="true">
-          <span class="orb-ico">🌟</span>
-          <span class="orb-label">Coming soon</span>
-        </a>
-      </li>
-    </ul>
+    <p class="hub-tagline">Choose a star to begin your journey</p>
   </section>
 </main>
+
+<style>
+/* Container + background matches your dark aesthetic */
+.explore-hub { background:#0b0b0c; padding:2.5rem 1rem 4rem }
+.hub-wrap { position:relative; max-width:980px; margin:0 auto; text-align:center }
+
+/* Logo */
+.hub-logo {
+  width:min(540px,92vw);
+  display:block; margin:0 auto 1.5rem;
+  filter: drop-shadow(0 8px 24px rgba(0,0,0,.35));
+}
+
+/* Spokes overlay */
+.hub-spokes {
+  position:absolute; inset:0; width:100%; height:100%;
+  pointer-events:none;
+}
+
+/* Orbs container (absolute, centered) */
+.hub-orbs {
+  position:absolute; inset:0;
+  list-style:none; margin:0; padding:0;
+  pointer-events:none; /* allow links to be clickable via child */
+}
+
+/* Single orb */
+.hub-orb {
+  position:absolute; left:50%; top:50%;
+  transform: translate(-50%,-50%); /* we’ll add translate(x,y) via JS */
+  transition: transform .28s ease, box-shadow .18s ease, background-color .18s ease;
+  pointer-events:auto; /* re-enable for the link */
+}
+
+.hub-orb a {
+  display:grid; place-items:center; gap:.4rem;
+  width:84px; height:84px; border-radius:999px;
+  background:#11141b; color:#eaf2ff; text-decoration:none;
+  border:1px solid rgba(255,255,255,.10);
+  box-shadow:0 10px 28px rgba(0,0,0,.35);
+}
+.hub-orb a:hover { background:#0a4fb3; box-shadow:0 16px 40px rgba(10,79,179,.40) }
+
+.hub-icon { font-size:1.3rem; line-height:1 }
+.hub-label { font-size:.85rem; font-weight:600; letter-spacing:.01em }
+
+/* Central glow, subtle */
+.hub-wrap::before{
+  content:""; position:absolute; left:50%; top:calc(50% + 2px);
+  transform:translate(-50%,-50%); width:240px; height:240px; border-radius:50%;
+  background:radial-gradient(circle, rgba(59,130,246,.28), rgba(59,130,246,0) 60%);
+  filter: blur(22px);
+  pointer-events:none;
+}
+
+/* Tagline */
+.hub-tagline { color:#a7c7ff; opacity:.85; margin-top:1.75rem }
+
+/* Mobile fallback: stack into a grid under the logo */
+@media (max-width: 760px){
+  .hub-spokes { display:none }
+  .hub-orbs {
+    position:static; display:grid;
+    grid-template-columns:repeat(2, minmax(0,1fr));
+    gap:1rem 1.25rem; margin-top:1.25rem;
+    justify-items:center;
+  }
+  .hub-orb { position:static; transform:none }
+  .hub-wrap::before { display:none }
+}
+</style>
+
+<script>
+/* 8 destinations (6 live + 2 placeholders).  Icons = emoji so no extra libs. */
+const DESTS = [
+  { id: "agora",        label: "Agora",        href: "{{ '/agora/'        | relative_url }}", icon: "👥" },
+  { id: "concept-lab",  label: "Concept Lab",  href: "{{ '/concept-lab/'  | relative_url }}", icon: "🧪" },
+  { id: "pathways",     label: "Pathways",     href: "{{ '/pathways/'     | relative_url }}", icon: "🗺️" },
+  { id: "scriptorium",  label: "Scriptorium",  href: "{{ '/scriptorium/'  | relative_url }}", icon: "📖" },
+  { id: "atrium",       label: "Atrium",       href: "{{ '/atrium/'       | relative_url }}", icon: "📊" },
+  { id: "portal",       label: "Portal",       href: "{{ '/portal/'       | relative_url }}", icon: "✨" },
+  // placeholders:
+  { id: "observatory",  label: "Observatory",  href: "#", icon: "⭐" },
+  { id: "workshop",     label: "Workshop",     href: "#", icon: "🛠️" },
+];
+
+(function initHub(){
+  const list = document.getElementById('hub-orbs');
+  // build DOM
+  DESTS.forEach(d => {
+    const li = document.createElement('li');
+    li.className = 'hub-orb';
+    li.innerHTML = `
+      <a href="${d.href}">
+        <span class="hub-icon">${d.icon}</span>
+        <span class="hub-label">${d.label}</span>
+      </a>`;
+    list.appendChild(li);
+  });
+
+  const spokes = document.querySelector('.hub-spokes');
+
+  function layout(){
+    // container is the section (logo area height drives the ring)
+    const wrap = document.querySelector('.hub-wrap');
+    const rect = wrap.getBoundingClientRect();
+    const cx = rect.width/2;
+    // place ring a touch above vertical center so it feels anchored to the logo’s center
+    const cy = rect.height * 0.46;
+
+    // radius relative to viewport width; clamp for responsiveness
+    const r = Math.max(120, Math.min(rect.width * 0.22, 260));
+
+    // angles: start top (-90deg), go clockwise in 45deg steps
+    const angles = [...Array(8)].map((_,i)=> (-90 + i*45) * (Math.PI/180));
+
+    // position nodes
+    const nodes = Array.from(list.children);
+    nodes.forEach((li, i) => {
+      const a = angles[i];
+      const x = Math.cos(a) * r;
+      const y = Math.sin(a) * r;
+      li.style.transform = `translate(${(cx + x)}px, ${(cy + y)}px) translate(-50%,-50%)`;
+    });
+
+    // draw spokes in percentage space
+    spokes.setAttribute('viewBox','0 0 100 100');
+    spokes.innerHTML = '';
+    angles.forEach(a => {
+      const x = Math.cos(a) * r;
+      const y = Math.sin(a) * r;
+      const x2 = ( (cx + x) / rect.width ) * 100;
+      const y2 = ( (cy + y) / rect.height) * 100;
+      const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+      line.setAttribute('x1','50'); line.setAttribute('y1','50');
+      line.setAttribute('x2', x2.toFixed(3)); line.setAttribute('y2', y2.toFixed(3));
+      line.setAttribute('stroke','rgba(90,165,255,.28)');
+      line.setAttribute('stroke-width','.5');
+      line.setAttribute('stroke-dasharray','1.2 1.4');
+      spokes.appendChild(line);
+    });
+  }
+
+  // first layout after images load (logo height matters)
+  if (document.readyState === 'complete') layout();
+  else window.addEventListener('load', layout);
+  window.addEventListener('resize', layout);
+})();
+</script>
