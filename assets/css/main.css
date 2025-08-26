@@ -114,3 +114,20 @@ h1,h2,h3{line-height:1.2;margin:1rem 0 .5rem}
   padding:.45rem .75rem; border-radius:8px; border:1px solid #222; background:#0f1115; color:#e8e8ec; cursor:pointer
 }
 .tabbtn.active { background:#1a1f2a; border-color:#2a2f3a }
+/* Portal */
+.step-pill{display:flex;align-items:center;gap:.5rem}
+.step-pill span{display:grid;place-items:center;width:34px;height:34px;border-radius:999px;background:#20232b;border:1px solid #2a2f3a}
+.step-pill em{font-style:normal;opacity:.85;font-size:.9rem}
+.step-pill.active span{background:#3b82f6;color:#fff}
+.step-pill.done span{background:#22c55e;color:#fff}
+.connector{width:24px;height:2px;background:#2a2f3a;border-radius:10px}
+.portal .info{background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.28);border-radius:10px;padding:1rem;margin-bottom:1rem}
+.field{display:flex;flex-direction:column;gap:.35rem}
+.field input,.field select,.field textarea{
+  background:#0f1115;border:1px solid #222;border-radius:10px;color:#e8e8ec;padding:.6rem .7rem
+}
+.field textarea{resize:vertical}
+.checkrow{display:flex;gap:.6rem;align-items:flex-start;padding:.6rem;background:#0f1115;border:1px solid #1b1f27;border-radius:10px;margin:.5rem 0}
+.checkrow input{margin-top:.25rem}
+.actions{display:flex;gap:.6rem;justify-content:flex-end;margin-top:.75rem}
+
