@@ -414,3 +414,54 @@ body .site-header .site-brand { display: inline-block; }
   .orb { width: 92px; height: 92px; }
   .orb .orb-label { font-size: .92rem; }
 }
+/* ==== Explore arc refinements (safe overrides) ==== */
+
+/* give us two knobs to dial in quickly */
+.explore-orbs {
+  /* how high the arc starts against the logo card */
+  top: 2.5%;
+  /* how “wide/tall” the semi-circle is */
+  width: 68%;
+  height: 58%;
+}
+
+/* make the orbs sit a little farther from the base of the arc
+   (bigger “radius” = less overlap with the logo text) */
+.explore-orbs > li {
+  transform: rotate(var(--angle)) translateY(-125%); /* was -100% */
+}
+
+/* orb polish */
+.orb {
+  width: 80px;   /* was 84 */
+  height: 80px;
+  background: var(--orb-bg);
+  border: 1px solid rgba(255,255,255,.10);
+  box-shadow: 0 10px 28px rgba(0,0,0,.28);
+}
+.orb:hover,
+.orb:focus-visible {
+  transform: translateZ(0) scale(1.07);
+}
+
+/* icon + label readability */
+.orb .orb-icon { font-size: 1.25rem; opacity: .95; }
+.orb .orb-label {
+  margin-top: .05rem;
+  font-size: .8rem;          /* slightly tighter */
+  font-weight: 600;
+  letter-spacing: .01em;
+  opacity: .9;
+  text-shadow: 0 1px 1px rgba(0,0,0,.35);  /* keep white readable on blue */
+}
+
+/* logo card breathing room (prevents overlap visually) */
+.explore-hero {
+  padding: 2rem 1rem 7.5rem; /* + a bit more bottom space */
+}
+
+/* mobile tap targets */
+@media (max-width: 750px) {
+  .orb { width: 92px; height: 92px; }
+  .orb .orb-label { font-size: .86rem; }
+}
