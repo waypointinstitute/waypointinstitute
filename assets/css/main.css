@@ -167,3 +167,5 @@ h1,h2,h3{line-height:1.2;margin:1rem 0 .5rem}
 .badge--blue{border-color:#1e3a8a;background:rgba(59,130,246,.12);color:#bfdbfe}
 .badge--purple{border-color:#4c1d95;background:rgba(168,85,247,.12);color:#e9d5ff}
 .btn{background:linear-gradient(90deg,#3b82f6,#8b5cf6);color:#fff;padding:.55rem .9rem;border-radius:10px;text-decoration:none;border:1px solid rgba(255,255,255,.15)}
+/* Make sure all [hidden] nodes actually disappear, even if other classes set display */
+[hidden] { display: none !important; }
