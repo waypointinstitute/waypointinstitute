@@ -6,56 +6,74 @@ permalink: /explore/
 
 <main class="explore">
   <section class="explore-hero">
-    <img class="explore-logo" src="{{ 'assets/logo.png' | relative_url }}" alt="Waypoint Institute">
+    <!-- Centered transparent logo -->
+    <img class="explore-logo" src="{{ '/assets/logo.png' | relative_url }}" alt="Waypoint Institute compass">
 
+    <!-- Orb ring (8 points) -->
+    <ul class="orb-ring" style="--R: clamp(140px, 24vw, 240px);">
+      <!-- Top (−90°) -->
+      <li style="--a:-90deg">
+        <a class="orb" href="{{ '/pathways/' | relative_url }}">
+          <span class="orb-ico">🗺️</span>
+          <span class="orb-label">Pathways</span>
+        </a>
+      </li>
 
-    <!-- Orb ring — 6 items, positioned by --angle -->
-   <ul class="explore-orbs">
-  <li style="--angle:-75deg;">
-    <a class="orb" href="{{ '/agora/' | relative_url }}" aria-label="Agora">
-      <span class="orb-icon">👥</span>
-      <span class="orb-label">Agora</span>
-    </a>
-  </li>
+      <!-- Top-right (−45°) -->
+      <li style="--a:-45deg">
+        <a class="orb" href="{{ '/scriptorium/' | relative_url }}">
+          <span class="orb-ico">📖</span>
+          <span class="orb-label">Scriptorium</span>
+        </a>
+      </li>
 
-  <li style="--angle:-45deg;">
-    <a class="orb" href="{{ '/concept-lab/' | relative_url }}" aria-label="Concept Lab">
-      <span class="orb-icon">🧪</span>
-      <span class="orb-label">Concept Lab</span>
-    </a>
-  </li>
+      <!-- Right (0°) -->
+      <li style="--a:0deg">
+        <a class="orb" href="{{ '/atrium/' | relative_url }}">
+          <span class="orb-ico">📊</span>
+          <span class="orb-label">Atrium</span>
+        </a>
+      </li>
 
-  <li style="--angle:-15deg;">
-    <a class="orb" href="{{ '/pathways/' | relative_url }}" aria-label="Pathways">
-      <span class="orb-icon">🗺️</span>
-      <span class="orb-label">Pathways</span>
-    </a>
-  </li>
+      <!-- Bottom-right (45°) -->
+      <li style="--a:45deg">
+        <a class="orb" href="{{ '/portal/' | relative_url }}">
+          <span class="orb-ico">✨</span>
+          <span class="orb-label">Portal</span>
+        </a>
+      </li>
 
-  <li style="--angle:15deg;">
-    <a class="orb" href="{{ '/scriptorium/' | relative_url }}" aria-label="Scriptorium">
-      <span class="orb-icon">📖</span>
-      <span class="orb-label">Scriptorium</span>
-    </a>
-  </li>
+      <!-- Bottom (90°) — placeholder -->
+      <li style="--a:90deg">
+        <a class="orb orb--disabled" href="#" aria-disabled="true">
+          <span class="orb-ico">🧭</span>
+          <span class="orb-label">Coming soon</span>
+        </a>
+      </li>
 
-  <li style="--angle:45deg;">
-    <a class="orb" href="{{ '/atrium/' | relative_url }}" aria-label="Atrium">
-      <span class="orb-icon">📊</span>
-      <span class="orb-label">Atrium</span>
-    </a>
-  </li>
+      <!-- Bottom-left (135°) -->
+      <li style="--a:135deg">
+        <a class="orb" href="{{ '/agora/' | relative_url }}">
+          <span class="orb-ico">👥</span>
+          <span class="orb-label">Agora</span>
+        </a>
+      </li>
 
-  <li style="--angle:75deg;">
-    <a class="orb" href="{{ '/portal/' | relative_url }}" aria-label="Portal">
-      <span class="orb-icon">✨</span>
-      <span class="orb-label">Portal</span>
-    </a>
-  </li>
-</ul>
+      <!-- Left (180°) -->
+      <li style="--a:180deg">
+        <a class="orb" href="{{ '/concept-lab/' | relative_url }}">
+          <span class="orb-ico">🧪</span>
+          <span class="orb-label">Concept Lab</span>
+        </a>
+      </li>
 
-</ul>
-
+      <!-- Top-left (−135°) — placeholder -->
+      <li style="--a:-135deg">
+        <a class="orb orb--disabled" href="#" aria-disabled="true">
+          <span class="orb-ico">🌟</span>
+          <span class="orb-label">Coming soon</span>
+        </a>
+      </li>
     </ul>
   </section>
 </main>
