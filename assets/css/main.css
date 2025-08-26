@@ -270,3 +270,111 @@ header nav a[aria-current="page"]{
 .btn-primary {background:#2563eb; border-color:rgba(37,99,235,.6)}
 .btn-ghost {background:transparent}
 
+/* ===== Explore (Home) ===== */
+.explore {
+  /* White / light background to match the logo page; keep footer readable */
+  --brand-blue: #0a4fb3;            /* your logo blue */
+  --orb-bg: #0f1218;                /* matches inner pages */
+  --orb-text: #ffffff;
+  --orb-shadow: 0 8px 28px rgba(0,0,0,.25);
+  background: #f7f7fb;
+  padding: 2rem 0 4rem;
+}
+
+.explore-hero {
+  position: relative;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 2rem 1rem 6rem;
+}
+
+.explore-logo {
+  display: block;
+  margin: 0 auto 1.5rem;
+  width: min(560px, 92vw);
+  filter: drop-shadow(0 8px 20px rgba(0,0,0,.1));
+}
+
+/* Orb ring (semicircle) */
+.explore-orbs {
+  position: absolute;
+  top: 6%;            /* bring the arc close to the upper half of the logo */
+  left: 50%;
+  width: 64%;
+  height: 54%;
+  transform: translateX(-50%);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Position each LI using a polar trick:
+   rotate to angle, then translate outward, then reset rotation for upright labels */
+.explore-orbs > li {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform-origin: bottom center;
+  transform: rotate(var(--angle)) translateY(-100%);
+}
+
+/* Orb anchor */
+.orb {
+  display: grid;
+  place-items: center;
+  gap: .4rem;
+  width: 84px;
+  height: 84px;
+  border-radius: 999px;
+  background: var(--orb-bg);
+  color: var(--orb-text);
+  text-decoration: none;
+  box-shadow: var(--orb-shadow);
+  border: 1px solid rgba(255,255,255,.06);
+  transition: transform .18s ease, box-shadow .18s ease, background-color .18s ease;
+}
+
+/* Keep labels readable and upright */
+.orb .orb-icon {
+  font-size: 1.35rem;
+  line-height: 1;
+}
+.orb .orb-label {
+  font-size: .85rem;
+  font-weight: 600;
+  letter-spacing: .01em;
+  opacity: .92;
+}
+
+/* Hover/Focus: brand blue fill, stronger lift */
+.orb:hover,
+.orb:focus-visible {
+  background: var(--brand-blue);
+  transform: translateZ(0) scale(1.06);
+  box-shadow: 0 10px 34px rgba(10,79,179,.35);
+  outline: none;
+}
+
+/* Mobile layout: fall back to a neat grid under the logo (no absolute positioning) */
+@media (max-width: 750px) {
+  .explore-orbs {
+    position: static;
+    transform: none;
+    width: 100%;
+    height: auto;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem 1.25rem;
+    justify-items: center;
+    margin-top: 1.5rem;
+  }
+  .explore-orbs > li {
+    position: static;
+    transform: none;
+  }
+  .orb { width: 96px; height: 96px; }
+  .orb .orb-label { font-size: .9rem; }
+}
+
+/* Ensure the site header keeps the brand link on this page */
+body .site-header .site-brand { display: inline-block; }
