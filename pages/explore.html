@@ -98,10 +98,38 @@ permalink: /explore/
   .hub-wrap::before{ display:none }
 }
 </style>
-// radius relative to viewport width; clamp for responsiveness
-const baseR = rect.width * 0.22;
-const isDesktop = window.matchMedia('(min-width:900px)').matches;
-const r = Math.max(130, Math.min(baseR * (isDesktop ? 1.06 : 1), 280));
+/* Desktop: make labels appear on hover as a tooltip, and grow the orbs */
+@media (min-width: 900px) {
+  .hub-orb a {
+    position: relative;
+    width: 96px;               /* bigger orb on desktop */
+    height: 96px;
+    gap: 0;                    /* no gap—label becomes a tooltip */
+  }
+  .hub-icon { font-size: 1.6rem; }
+
+  /* Tooltip labels */
+  .hub-label {
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    transform: translate(-50%, .45rem);
+    background: rgba(0,0,0,.6);
+    border: 1px solid rgba(255,255,255,.15);
+    border-radius: 8px;
+    padding: .28rem .55rem;
+    white-space: nowrap;       /* prevents wrapping */
+    box-shadow: 0 8px 16px rgba(0,0,0,.28);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity .15s ease, transform .15s ease;
+  }
+  .hub-orb a:hover .hub-label,
+  .hub-orb a:focus-visible .hub-label {
+    opacity: 1;
+    transform: translate(-50%, .3rem);
+  }
+}
 
 <script>
 const DESTS = [
