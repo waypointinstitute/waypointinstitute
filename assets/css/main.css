@@ -270,198 +270,110 @@ header nav a[aria-current="page"]{
 .btn-primary {background:#2563eb; border-color:rgba(37,99,235,.6)}
 .btn-ghost {background:transparent}
 
-/* ===== Explore (Home) ===== */
+/* ===== Explore (Home) – compass ring ===== */
 .explore {
-  /* White / light background to match the logo page; keep footer readable */
-  --brand-blue: #0a4fb3;            /* your logo blue */
-  --orb-bg: #0f1218;                /* matches inner pages */
-  --orb-text: #ffffff;
-  --orb-shadow: 0 8px 28px rgba(0,0,0,.25);
-  background: #f7f7fb;
-  padding: 2rem 0 4rem;
+  /* keep the site’s dark background from :root/body */
+  padding: 1.5rem 0 3rem;
 }
 
 .explore-hero {
   position: relative;
   max-width: 980px;
   margin: 0 auto;
-  padding: 2rem 1rem 6rem;
+  padding: 2rem 1rem 6rem; /* bottom space for labels on small screens */
 }
 
 .explore-logo {
   display: block;
-  margin: 0 auto 1.5rem;
+  margin: 0 auto;
   width: min(560px, 92vw);
-  filter: drop-shadow(0 8px 20px rgba(0,0,0,.1));
+  height: auto;
+  filter: drop-shadow(0 10px 28px rgba(0,0,0,.35));
+  pointer-events: none; /* so orbs receive clicks when overlapping */
 }
 
-/* Orb ring (semicircle) */
-.explore-orbs {
+/* Orb ring centered on the logo */
+.orb-ring {
   position: absolute;
-  top: 6%;            /* bring the arc close to the upper half of the logo */
-  left: 50%;
-  width: 64%;
-  height: 54%;
-  transform: translateX(-50%);
+  inset: 0;
   list-style: none;
   margin: 0;
   padding: 0;
+
+  /* radius of the ring; override per-page if needed */
+  --R: clamp(140px, 24vw, 240px);
 }
 
-/* Position each LI using a polar trick:
-   rotate to angle, then translate outward, then reset rotation for upright labels */
-.explore-orbs > li {
+/* Each LI is positioned by angle and radius using polar transform:
+   rotate(angle) → translate(radius) → rotate back to keep text upright */
+.orb-ring > li {
   position: absolute;
-  bottom: 0;
   left: 50%;
-  transform-origin: bottom center;
-  transform: rotate(var(--angle)) translateY(-100%);
+  top: calc(50% - 6px); /* small nudge to visually center on the logo */
+  transform: rotate(var(--a)) translate(var(--R)) rotate(calc(-1 * var(--a)));
 }
 
-/* Orb anchor */
+/* The orbs */
 .orb {
+  --orb-fill: #60a5fa;            /* light blue */
+  --orb-fill-hover: #7db8ff;
+  --orb-text: #fff;
+  --orb-ring: rgba(255,255,255,.18);
+
   display: grid;
   place-items: center;
-  gap: .4rem;
-  width: 84px;
-  height: 84px;
+  gap: .35rem;
+  width: 86px;
+  height: 86px;
   border-radius: 999px;
-  background: var(--orb-bg);
+  background: var(--orb-fill);
   color: var(--orb-text);
   text-decoration: none;
-  box-shadow: var(--orb-shadow);
-  border: 1px solid rgba(255,255,255,.06);
-  transition: transform .18s ease, box-shadow .18s ease, background-color .18s ease;
+  border: 1px solid var(--orb-ring);
+  box-shadow: 0 16px 36px rgba(0,0,0,.35);
+  transition: transform .16s ease, filter .16s ease, box-shadow .16s ease, background-color .16s ease;
 }
 
-/* Keep labels readable and upright */
-.orb .orb-icon {
-  font-size: 1.35rem;
-  line-height: 1;
-}
-.orb .orb-label {
-  font-size: .85rem;
-  font-weight: 600;
-  letter-spacing: .01em;
-  opacity: .92;
-}
-
-/* Hover/Focus: brand blue fill, stronger lift */
 .orb:hover,
 .orb:focus-visible {
-  background: var(--brand-blue);
+  background: var(--orb-fill-hover);
   transform: translateZ(0) scale(1.06);
-  box-shadow: 0 10px 34px rgba(10,79,179,.35);
+  box-shadow: 0 22px 48px rgba(0,0,0,.45);
   outline: none;
 }
 
-/* Mobile layout: fall back to a neat grid under the logo (no absolute positioning) */
-@media (max-width: 750px) {
-  .explore-orbs {
+.orb-ico { font-size: 1.35rem; line-height: 1; }
+.orb-label {
+  font-size: .85rem;
+  font-weight: 700;
+  letter-spacing: .01em;
+}
+
+/* Disabled placeholders */
+.orb--disabled {
+  --orb-fill: #1f2937;           /* slate-800 */
+  --orb-fill-hover: #1f2937;
+  --orb-text: #a7b1c2;
+  cursor: default;
+  pointer-events: none;
+  border-color: rgba(255,255,255,.10);
+  box-shadow: 0 12px 28px rgba(0,0,0,.30);
+}
+
+/* Small screens: ring becomes a neat grid under the logo */
+@media (max-width: 720px) {
+  .orb-ring {
     position: static;
-    transform: none;
-    width: 100%;
-    height: auto;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1rem 1.25rem;
     justify-items: center;
-    margin-top: 1.5rem;
+    margin-top: 1.25rem;
   }
-  .explore-orbs > li {
+  .orb-ring > li {
     position: static;
     transform: none;
   }
   .orb { width: 96px; height: 96px; }
-  .orb .orb-label { font-size: .9rem; }
-}
-
-/* Ensure the site header keeps the brand link on this page */
-body .site-header .site-brand { display: inline-block; }
-/* --- Explore: spacing + upright content --- */
-.explore-hero { padding: 3rem 1rem 6rem; } /* more room above the arc */
-
-.explore-orbs {
-  /* make the arc “bigger” so items don’t collide */
-  height: 420px;       /* larger radius than before */
-  width: 70%;          /* a touch wider */
-}
-
-.explore-orbs > li {
-  /* rotate to angle, then push outward further (larger than -100%) */
-  transform: rotate(var(--angle)) translateY(-185%);
-  transform-origin: bottom center;
-}
-
-/* Keep icons/labels upright after the parent rotation */
-.explore-orbs > li .orb {
-  transform: rotate(calc(-1 * var(--angle)));
-}
-
-/* Maintain upright+scale on hover */
-.explore-orbs > li .orb:hover,
-.explore-orbs > li .orb:focus-visible {
-  transform: rotate(calc(-1 * var(--angle))) scale(1.06);
-}
-
-/* A little stronger drop shadow so the orbs separate visually */
-.orb { box-shadow: 0 10px 28px rgba(0,0,0,.35); }
-
-/* Mobile polish: more compact grid under the logo */
-@media (max-width: 750px) {
-  .explore-hero { padding: 2rem 1rem 2.5rem; }
-  .explore-orbs { width: 100%; height: auto; gap: 1rem 1.25rem; }
-  .orb { width: 92px; height: 92px; }
-  .orb .orb-label { font-size: .92rem; }
-}
-/* ==== Explore arc refinements (safe overrides) ==== */
-
-/* give us two knobs to dial in quickly */
-.explore-orbs {
-  /* how high the arc starts against the logo card */
-  top: 2.5%;
-  /* how “wide/tall” the semi-circle is */
-  width: 68%;
-  height: 58%;
-}
-
-/* make the orbs sit a little farther from the base of the arc
-   (bigger “radius” = less overlap with the logo text) */
-.explore-orbs > li {
-  transform: rotate(var(--angle)) translateY(-125%); /* was -100% */
-}
-
-/* orb polish */
-.orb {
-  width: 80px;   /* was 84 */
-  height: 80px;
-  background: var(--orb-bg);
-  border: 1px solid rgba(255,255,255,.10);
-  box-shadow: 0 10px 28px rgba(0,0,0,.28);
-}
-.orb:hover,
-.orb:focus-visible {
-  transform: translateZ(0) scale(1.07);
-}
-
-/* icon + label readability */
-.orb .orb-icon { font-size: 1.25rem; opacity: .95; }
-.orb .orb-label {
-  margin-top: .05rem;
-  font-size: .8rem;          /* slightly tighter */
-  font-weight: 600;
-  letter-spacing: .01em;
-  opacity: .9;
-  text-shadow: 0 1px 1px rgba(0,0,0,.35);  /* keep white readable on blue */
-}
-
-/* logo card breathing room (prevents overlap visually) */
-.explore-hero {
-  padding: 2rem 1rem 7.5rem; /* + a bit more bottom space */
-}
-
-/* mobile tap targets */
-@media (max-width: 750px) {
-  .orb { width: 92px; height: 92px; }
-  .orb .orb-label { font-size: .86rem; }
+  .orb-label { font-size: .9rem; }
 }
