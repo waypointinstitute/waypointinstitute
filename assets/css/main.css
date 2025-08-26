@@ -270,110 +270,97 @@ header nav a[aria-current="page"]{
 .btn-primary {background:#2563eb; border-color:rgba(37,99,235,.6)}
 .btn-ghost {background:transparent}
 
-/* ===== Explore (Home) – compass ring ===== */
-.explore {
-  /* keep the site’s dark background from :root/body */
-  padding: 1.5rem 0 3rem;
+/* ===== Explore (Home) – compass ring (refined) ===== */
+.explore { padding: 1.5rem 0 3rem; }
+
+.explore-hero{
+  position:relative;
+  max-width:980px;
+  margin:0 auto;
+  padding:2rem 1rem 6rem;
 }
 
-.explore-hero {
-  position: relative;
-  max-width: 980px;
-  margin: 0 auto;
-  padding: 2rem 1rem 6rem; /* bottom space for labels on small screens */
+/* Logo: subtle tone and shadow so it doesn’t overpower the orbs */
+.explore-logo{
+  display:block;
+  margin:0 auto;
+  width:min(560px,92vw);
+  height:auto;
+  filter:brightness(.96) contrast(.98) drop-shadow(0 10px 28px rgba(0,0,0,.35));
+  pointer-events:none; /* orbs still clickable if they overlap the logo */
 }
 
-.explore-logo {
-  display: block;
-  margin: 0 auto;
-  width: min(560px, 92vw);
-  height: auto;
-  filter: drop-shadow(0 10px 28px rgba(0,0,0,.35));
-  pointer-events: none; /* so orbs receive clicks when overlapping */
+/* Optional soft halo centered on the “ring center”.
+   You can tweak --center-nudge to move the ring a few px if needed. */
+.explore-hero::before{
+  content:"";
+  position:absolute;
+  left:50%; top:calc(50% + var(--center-nudge, -6px));
+  transform:translate(-50%,-50%);
+  width:220px; height:220px; border-radius:50%;
+  background:radial-gradient(circle, rgba(59,130,246,.22), rgba(59,130,246,0) 62%);
+  filter:blur(18px);
+  pointer-events:none;
 }
 
-/* Orb ring centered on the logo */
-.orb-ring {
-  position: absolute;
-  inset: 0;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-
-  /* radius of the ring; override per-page if needed */
-  --R: clamp(140px, 24vw, 240px);
+/* Orb ring centered on the logo; --R is the radius of the ring */
+.orb-ring{
+  position:absolute; inset:0;
+  list-style:none; margin:0; padding:0;
+  --R: clamp(150px, 25vw, 250px);
 }
 
-/* Each LI is positioned by angle and radius using polar transform:
-   rotate(angle) → translate(radius) → rotate back to keep text upright */
-.orb-ring > li {
-  position: absolute;
-  left: 50%;
-  top: calc(50% - 6px); /* small nudge to visually center on the logo */
+/* Position each orb by angle: rotate(angle) → translate(R) → rotate back */
+.orb-ring > li{
+  position:absolute;
+  left:50%;
+  top:calc(50% - 6px); /* tiny visual nudge; adjust if your logo sits high/low */
   transform: rotate(var(--a)) translate(var(--R)) rotate(calc(-1 * var(--a)));
 }
 
-/* The orbs */
-.orb {
-  --orb-fill: #60a5fa;            /* light blue */
-  --orb-fill-hover: #7db8ff;
-  --orb-text: #fff;
-  --orb-ring: rgba(255,255,255,.18);
+/* Orbs */
+.orb{
+  --orb-fill:#60a5fa;            /* light blue to match the logo */
+  --orb-fill-hover:#7db8ff;
+  --orb-text:#fff;
+  --orb-ring:rgba(255,255,255,.18);
 
-  display: grid;
-  place-items: center;
-  gap: .35rem;
-  width: 86px;
-  height: 86px;
-  border-radius: 999px;
-  background: var(--orb-fill);
-  color: var(--orb-text);
-  text-decoration: none;
-  border: 1px solid var(--orb-ring);
-  box-shadow: 0 16px 36px rgba(0,0,0,.35);
-  transition: transform .16s ease, filter .16s ease, box-shadow .16s ease, background-color .16s ease;
+  display:grid; place-items:center; gap:.35rem;
+  width:86px; height:86px; border-radius:999px;
+  background:var(--orb-fill); color:var(--orb-text);
+  text-decoration:none; border:1px solid var(--orb-ring);
+  box-shadow:0 16px 36px rgba(0,0,0,.35);
+  transition:transform .16s ease, box-shadow .16s ease, background-color .16s ease;
+}
+.orb:hover, .orb:focus-visible{
+  background:var(--orb-fill-hover);
+  transform:translateZ(0) scale(1.06);
+  box-shadow:0 22px 48px rgba(0,0,0,.45);
+  outline:none;
 }
 
-.orb:hover,
-.orb:focus-visible {
-  background: var(--orb-fill-hover);
-  transform: translateZ(0) scale(1.06);
-  box-shadow: 0 22px 48px rgba(0,0,0,.45);
-  outline: none;
+.orb-ico{ font-size:1.35rem; line-height:1 }
+.orb-label{ font-size:.85rem; font-weight:700; letter-spacing:.01em; text-shadow:0 1px 2px rgba(0,0,0,.35) }
+
+/* Placeholders look a touch dimmer and are not interactive if you add .orb--disabled */
+.orb--disabled{
+  --orb-fill:#1f2937;            /* slate-800 */
+  --orb-fill-hover:#1f2937;
+  --orb-text:#a7b1c2;
+  cursor:default; pointer-events:none;
+  border-color:rgba(255,255,255,.10);
+  box-shadow:0 12px 28px rgba(0,0,0,.3);
 }
 
-.orb-ico { font-size: 1.35rem; line-height: 1; }
-.orb-label {
-  font-size: .85rem;
-  font-weight: 700;
-  letter-spacing: .01em;
-}
-
-/* Disabled placeholders */
-.orb--disabled {
-  --orb-fill: #1f2937;           /* slate-800 */
-  --orb-fill-hover: #1f2937;
-  --orb-text: #a7b1c2;
-  cursor: default;
-  pointer-events: none;
-  border-color: rgba(255,255,255,.10);
-  box-shadow: 0 12px 28px rgba(0,0,0,.30);
-}
-
-/* Small screens: ring becomes a neat grid under the logo */
-@media (max-width: 720px) {
-  .orb-ring {
-    position: static;
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1rem 1.25rem;
-    justify-items: center;
-    margin-top: 1.25rem;
+/* Mobile: fall back to a neat grid under the logo */
+@media (max-width:720px){
+  .orb-ring{
+    position:static;
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:1rem 1.25rem; justify-items:center; margin-top:1.25rem;
   }
-  .orb-ring > li {
-    position: static;
-    transform: none;
-  }
-  .orb { width: 96px; height: 96px; }
-  .orb-label { font-size: .9rem; }
+  .orb-ring > li{ position:static; transform:none }
+  .orb{ width:96px; height:96px }
+  .orb-label{ font-size:.9rem }
 }
