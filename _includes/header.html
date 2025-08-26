@@ -4,14 +4,14 @@
     <a class="site-brand" href="{{ '/' | relative_url }}">Waypoint Institute</a>
 
     <nav class="site-nav">
-      <a href="{{ '/explore/' | relative_url }}" {% if page.url == '/explore/' %}aria-current="page"{% endif %}>Explore</a>
-      <a href="{{ '/essays/' | relative_url }}" {% if page.url == '/essays/' %}aria-current="page"{% endif %}>Essays</a>
-      <a href="{{ '/research/' | relative_url }}" {% if page.url == '/research/' %}aria-current="page"{% endif %}>Research</a>
-      <a href="{{ '/projects/' | relative_url }}" {% if page.url == '/projects/' %}aria-current="page"{% endif %}>Projects</a>
-      <a href="{{ '/people/' | relative_url }}" {% if page.url == '/people/' %}aria-current="page"{% endif %}>People</a>
-      <a href="{{ '/publications/' | relative_url }}" {% if page.url == '/publications/' %}aria-current="page"{% endif %}>Publications</a>
-      <a href="{{ '/newsletter/' | relative_url }}" {% if page.url == '/newsletter/' %}aria-current="page"{% endif %}>Newsletter</a>
-      <a href="{{ '/donate/' | relative_url }}" {% if page.url == '/donate/' %}aria-current="page"{% endif %}>Donate</a>
+      <a href="{{ '/portal/' | relative_url }}" {% if page.url == '/essays/' %}aria-current="page"{% endif %}>Portal</a>
+      <a href="{{ '/scriptorium/' | relative_url }}" {% if page.url == '/scriptorium/' %}aria-current="page"{% endif %}>Scriptorium</a>
+      <a href="{{ '/concept-lab/' | relative_url }}" {% if page.url == '/concept-lab/' %}aria-current="page"{% endif %}>Concept-lab</a>
+      <a href="{{ '/atrium/' | relative_url }}" {% if page.url == '/atrium/' %}aria-current="page"{% endif %}>Atrium</a>
+      <a href="{{ '/agora/' | relative_url }}" {% if page.url == '/agora/' %}aria-current="page"{% endif %}>Agora</a>
+      <a href="{{ '/pathways/' | relative_url }}" {% if page.url == '/pathways/' %}aria-current="page"{% endif %}>Pathways</a>
     </nav>
   </div>
 </header>
+/* Hide only the menu links */
+.site-header .site-nav { display: none !important; }
