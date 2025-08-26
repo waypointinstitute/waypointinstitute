@@ -1,0 +1,22 @@
+[
+  {
+    "id": "vita-antony",
+    "title": "Life of Antony",
+    "author": "Athanasius of Alexandria",
+    "difficulty": "beginner",
+    "topic_tags": ["patristics", "asceticism", "biography"],
+    "annotation": "Classic account of Antony’s formation and temptations; foundational for desert spirituality.",
+    "cover_image_url": "",
+    "amazon_url": "https://www.amazon.com/dp/0140443953"
+  },
+  {
+    "id": "ladder-of-divine-ascent",
+    "title": "The Ladder of Divine Ascent",
+    "author": "John Climacus",
+    "difficulty": "advanced",
+    "topic_tags": ["monasticism", "virtue", "spiritual-combat"],
+    "annotation": "Thirty rungs of transformation—often austere, but deeply structured ascesis.",
+    "cover_image_url": "",
+    "amazon_url": ""
+  }
+]
