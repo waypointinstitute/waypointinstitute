@@ -169,3 +169,17 @@ h1,h2,h3{line-height:1.2;margin:1rem 0 .5rem}
 .btn{background:linear-gradient(90deg,#3b82f6,#8b5cf6);color:#fff;padding:.55rem .9rem;border-radius:10px;text-decoration:none;border:1px solid rgba(255,255,255,.15)}
 /* Make sure all [hidden] nodes actually disappear, even if other classes set display */
 [hidden] { display: none !important; }
+/* Header / nav cleanup */
+.site-header, header { border-bottom: 1px solid rgba(255,255,255,.06); }
+.site-nav a, nav a {
+  color: #e5e7eb;
+  text-decoration: none;
+  padding: .45rem .6rem;
+  border-radius: 8px;
+}
+.site-nav a:hover, nav a:hover { background: rgba(255,255,255,.07); color:#fff; }
+.site-nav a[aria-current="page"], nav a[aria-current="page"] {
+  background: linear-gradient(90deg,#f59e0b,#ef4444);
+  color: #0b0c0f;
+  font-weight: 600;
+}
