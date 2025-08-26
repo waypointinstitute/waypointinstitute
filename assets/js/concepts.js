@@ -85,22 +85,33 @@
   $tag.addEventListener('change', render);
   render();
 
-  // Modal
+   // Modal
   const $modal = document.getElementById('cl-modal');
   const $title = document.getElementById('cl-title');
   const $tags  = document.getElementById('cl-tags');
   const $body  = document.getElementById('cl-body');
   const $close = document.getElementById('cl-close');
+  const $back  = document.querySelector('.cl-modal__backdrop');
+
+  // belt-and-suspenders: ensure modal starts hidden
+  if ($modal) $modal.hidden = true;
 
   function openModal(c){
-    $title.textContent = c.title;
+    if (!$modal) return;
+    $title.textContent = c.title || '';
     $tags.innerHTML = (c.tags||[]).map(t => `<span class="badge badge--blue"><i data-lucide="tag" style="width:14px;height:14px"></i>${t}</span>`).join(' ');
     $body.innerHTML = c.content_html || '<p class="muted">No content yet.</p>';
-    $modal.hidden = false; document.body.style.overflow = 'hidden';
+    $modal.hidden = false;
+    document.body.style.overflow = 'hidden';
     if (window.lucide) window.lucide.createIcons();
   }
-  function closeModal(){ $modal.hidden = true; document.body.style.overflow = ''; }
-  $close.addEventListener('click', closeModal);
-  document.querySelector('.cl-modal__backdrop').addEventListener('click', closeModal);
-  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$modal.hidden) closeModal(); });
-})();
+
+  function closeModal(){
+    if (!$modal) return;
+    $modal.hidden = true;
+    document.body.style.overflow = '';
+  }
+
+  if ($close) $close.addEventListener('click', closeModal);
+  if ($back)  $back.addEventListener('click', closeModal);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && $modal && !$modal.hidden) closeModal(); });
