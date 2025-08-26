@@ -1,0 +1,28 @@
+[
+  {
+    "created_date": "2025-08-01T12:00:00Z",
+    "age_bracket": "25-34",
+    "sex": "male",
+    "religiosity": "somewhat",
+    "tradition": "catholic",
+    "context": "liturgy",
+    "intensity": 4,
+    "duration_minutes": 15,
+    "country": "US",
+    "anonymized_excerpt": "Felt overwhelming peace during the Eucharist.",
+    "consent_public_excerpt": true
+  },
+  {
+    "created_date": "2025-08-05T10:00:00Z",
+    "age_bracket": "35-44",
+    "sex": "female",
+    "religiosity": "very",
+    "tradition": "evangelical",
+    "context": "prayer",
+    "intensity": 5,
+    "duration_minutes": 8,
+    "country": "GB",
+    "anonymized_excerpt": "Sudden clarity while praying alone.",
+    "consent_public_excerpt": false
+  }
+]
