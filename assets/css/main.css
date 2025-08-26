@@ -213,7 +213,7 @@ header nav a[aria-current="page"]{
   background: linear-gradient(90deg,#f59e0b,#ef4444);
   color:#0b0c0f;
   font-weight:600;
-
+}
 
 /* Layout for the tiny header row (brand + one link) */
 .site-header .container {
