@@ -4,52 +4,133 @@ title: Explorer
 permalink: /explore/
 ---
 
-<section class="map">
-  <!-- connection lines -->
-  <svg class="map-lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-    {% assign rooms = site.data.rooms %}
-    {% for c in site.data.connections %}
-      {% assign A = rooms | where: 'id', c.from | first %}
-      {% assign B = rooms | where: 'id', c.to   | first %}
-      {% if A and B %}
-        <line x1="{{ A.x }}" y1="{{ A.y }}" x2="{{ B.x }}" y2="{{ B.y }}" class="conn" />
-      {% endif %}
-    {% endfor %}
-  </svg>
+<!-- SELF-CONTAINED EXPLORE PAGE (no _data, no external CSS/JS required) -->
+<section id="explore-root">
+  <style>
+    /* Scoped to #explore-root so it won't fight your main CSS */
+    #explore-root .map { position:relative; margin-top:1rem; }
+    #explore-root .map-lines{ position:absolute; inset:0; width:100%; height:60vh; pointer-events:none; }
+    #explore-root .map-lines .conn{ stroke:rgba(90,165,255,.3); stroke-width:.4; stroke-dasharray:2 1; }
+    #explore-root #stars{ position:absolute; inset:0; pointer-events:none; }
+    #explore-root #stars .star{ position:absolute; background:#fff; border-radius:50%; opacity:.6; animation:explore-twinkle var(--tw,3s) ease-in-out infinite; }
+    @keyframes explore-twinkle{0%,100%{opacity:.2}50%{opacity:1}}
+    #explore-root .desert{ position:absolute; left:0; right:0; bottom:0; height:33%;
+      background:linear-gradient(to top, rgba(180,120,40,.25), rgba(180,120,40,.12), transparent); pointer-events:none;}
+    #explore-root .map-canvas{ position:relative; height:60vh; border:1px solid #222; border-radius:16px;
+      background:radial-gradient(1200px 600px at 30% 20%, #171a20, #0d0f11); overflow:hidden;}
+    #explore-root .waypoint{ position:absolute; left:calc(var(--x) * 1%); top:calc(var(--y) * 1%); transform:translate(-50%,-50%); text-decoration:none;}
+    #explore-root .node{ width:84px; height:84px; display:grid; place-items:center; border-radius:999px;
+      background:linear-gradient(135deg, var(--c1), var(--c2)); border:2px solid rgba(255,255,255,.15);
+      box-shadow:0 12px 28px rgba(0,0,0,.35); transition:transform .18s ease, box-shadow .18s ease;}
+    #explore-root .waypoint:hover .node{ transform:scale(1.08); box-shadow:0 18px 40px rgba(0,0,0,.5);}
+    #explore-root .waypoint i{ width:34px; height:34px; color:#fff; display:inline-block;}
+    #explore-root .label{ position:absolute; left:50%; top:100%; transform:translate(-50%, .5rem) scale(.98);
+      background:rgba(0,0,0,.45); backdrop-filter:blur(6px); color:#e4e8ef; border:1px solid rgba(255,255,255,.15);
+      border-radius:10px; padding:.35rem .6rem; min-width:160px; text-align:center; opacity:0;
+      transition:opacity .15s ease, transform .15s ease;}
+    #explore-root .waypoint:hover .label{ opacity:1; transform:translate(-50%, .5rem) scale(1);}
+    #explore-root .label strong{ display:block; font-weight:600;}
+    #explore-root .label em{ display:block; opacity:.85; font-style:normal; font-size:.9em;}
+    #explore-root .hud{ margin-top:1rem; text-align:center;}
+    #explore-root .btn{ display:inline-flex; align-items:center; gap:.5rem; background:linear-gradient(90deg,#3b82f6,#8b5cf6);
+      color:#fff; padding:.75rem 1.1rem; border-radius:12px; text-decoration:none; border:1px solid rgba(255,255,255,.15);
+      box-shadow:0 10px 24px rgba(0,0,0,.35);}
+    #explore-root .btn:hover{ filter:brightness(1.05);}
+  </style>
 
-  <!-- background stars (JS will generate) -->
-  <div id="stars"></div>
+  <!-- Inline data: edit here as needed -->
+  <script id="explore-data" type="application/json">
+  {
+    "rooms":[
+      {"id":"agora","title":"Agora","href":"/agora/","desc":"Essays & Dispatches","x":20,"y":30,"c1":"#fbbf24","c2":"#f97316","icon":"users"},
+      {"id":"concept-lab","title":"Concept Lab","href":"/concept-lab/","desc":"Ideas & Frameworks","x":70,"y":25,"c1":"#a78bfa","c2":"#ec4899","icon":"flask-conical"},
+      {"id":"pathways","title":"Reading Pathways","href":"/pathways/","desc":"Guided Studies","x":50,"y":45,"c1":"#4ade80","c2":"#10b981","icon":"map"},
+      {"id":"portal","title":"Portal","href":"/portal/","desc":"Share Your Experience","x":30,"y":65,"c1":"#60a5fa","c2":"#06b6d4","icon":"sparkles"},
+      {"id":"atrium","title":"Research Atrium","href":"/atrium/","desc":"Data & Insights","x":75,"y":60,"c1":"#818cf8","c2":"#3b82f6","icon":"bar-chart-3"},
+      {"id":"scriptorium","title":"Scriptorium","href":"/scriptorium/","desc":"Sacred Library","x":45,"y":80,"c1":"#fb7185","c2":"#ec4899","icon":"book-open"}
+    ],
+    "connections":[
+      {"from":"agora","to":"concept-lab"},
+      {"from":"concept-lab","to":"pathways"},
+      {"from":"pathways","to":"portal"},
+      {"from":"portal","to":"atrium"},
+      {"from":"atrium","to":"scriptorium"},
+      {"from":"scriptorium","to":"agora"}
+    ]
+  }
+  </script>
 
-  <!-- sand/desert overlay -->
-  <div class="desert"></div>
-
-  <!-- nodes -->
-  <div class="map-canvas">
-    {% for r in rooms %}
-      <a class="waypoint"
-         href="{{ r.href | relative_url }}"
-         style="--x: {{ r.x }}; --y: {{ r.y }}; --c1: {{ r.c1 }}; --c2: {{ r.c2 }};"
-         data-title="{{ r.title }}" data-desc="{{ r.desc }}" data-icon="{{ r.icon }}">
-        <span class="node"><i data-lucide="{{ r.icon }}"></i></span>
-        <span class="label">
-          <strong>{{ r.title }}</strong>
-          <em>{{ r.desc }}</em>
-        </span>
-      </a>
-    {% endfor %}
+  <div class="map">
+    <svg class="map-lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg>
+    <div id="stars"></div>
+    <div class="desert"></div>
+    <div class="map-canvas" id="map-canvas"></div>
   </div>
 
-  <!-- HUD / CTA -->
   <div class="hud">
     <h3 id="hud-title">Navigate the Sacred</h3>
     <p id="hud-desc">Choose your path through the constellation of knowledge.</p>
-    <p class="cta">
-      <a class="btn" href="{{ '/navigator/' | relative_url }}">
-        <i data-lucide="compass"></i> Guide Me
-      </a>
-    </p>
+    <p class="cta"><a class="btn" href="{{ '/navigator/' | relative_url }}"><i data-lucide="compass"></i> Guide Me</a></p>
   </div>
 </section>
 
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-<script src="{{ '/assets/js/explore.js' | relative_url }}"></script>
+<script>
+  // Parse inline data
+  const DATA = JSON.parse(document.getElementById('explore-data').textContent);
+  const rooms = DATA.rooms, cons = DATA.connections;
+
+  // Draw dashed lines
+  (function drawLines(){
+    const svg = document.querySelector('#explore-root .map-lines');
+    cons.forEach(c => {
+      const A = rooms.find(r => r.id === c.from);
+      const B = rooms.find(r => r.id === c.to);
+      if(!A || !B) return;
+      const L = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      L.setAttribute('x1', A.x); L.setAttribute('y1', A.y);
+      L.setAttribute('x2', B.x); L.setAttribute('y2', B.y);
+      L.setAttribute('class', 'conn');
+      svg.appendChild(L);
+    });
+  })();
+
+  // Stars
+  (function makeStars(n=100){
+    const host = document.getElementById('stars');
+    for(let i=0;i<n;i++){
+      const s = document.createElement('div'); s.className='star';
+      s.style.left = Math.random()*100+'%';
+      s.style.top  = Math.random()*100+'%';
+      const size = Math.random()*2+1; s.style.width=size+'px'; s.style.height=size+'px';
+      s.style.setProperty('--tw', (Math.random()*2+2).toFixed(2)+'s');
+      host.appendChild(s);
+    }
+  })();
+
+  // Nodes
+  (function renderNodes(){
+    const wrap = document.getElementById('map-canvas');
+    rooms.forEach(r=>{
+      const a = document.createElement('a');
+      a.className='waypoint';
+      a.href = '{{ "/" | relative_url }}'.replace(/\/$/, '') + r.href; // keep it pages-friendly
+      a.style.setProperty('--x', r.x); a.style.setProperty('--y', r.y);
+      a.style.setProperty('--c1', r.c1); a.style.setProperty('--c2', r.c2);
+      a.dataset.title = r.title; a.dataset.desc = r.desc; a.dataset.icon = r.icon;
+
+      const dot = document.createElement('span'); dot.className='node';
+      const i = document.createElement('i'); i.setAttribute('data-lucide', r.icon); dot.appendChild(i);
+      const lab = document.createElement('span'); lab.className='label';
+      lab.innerHTML = '<strong>'+r.title+'</strong><em>'+r.desc+'</em>';
+
+      a.appendChild(dot); a.appendChild(lab); wrap.appendChild(a);
+
+      a.addEventListener('mouseenter', ()=>{
+        document.getElementById('hud-title').textContent = r.title;
+        document.getElementById('hud-desc').textContent  = r.desc;
+      });
+    });
+    if (window.lucide) window.lucide.createIcons(); // render icons
+  })();
+</script>
