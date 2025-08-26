@@ -1,17 +1,6 @@
-<li><a href="{{ '/explore/' | relative_url }}">Explore</a></li>
+
 <header class="site-header">
   <div class="container">
     <a class="site-brand" href="{{ '/' | relative_url }}">Waypoint Institute</a>
 
-    <nav class="site-nav">
-      <a href="{{ '/portal/' | relative_url }}" {% if page.url == '/essays/' %}aria-current="page"{% endif %}>Portal</a>
-      <a href="{{ '/scriptorium/' | relative_url }}" {% if page.url == '/scriptorium/' %}aria-current="page"{% endif %}>Scriptorium</a>
-      <a href="{{ '/concept-lab/' | relative_url }}" {% if page.url == '/concept-lab/' %}aria-current="page"{% endif %}>Concept-lab</a>
-      <a href="{{ '/atrium/' | relative_url }}" {% if page.url == '/atrium/' %}aria-current="page"{% endif %}>Atrium</a>
-      <a href="{{ '/agora/' | relative_url }}" {% if page.url == '/agora/' %}aria-current="page"{% endif %}>Agora</a>
-      <a href="{{ '/pathways/' | relative_url }}" {% if page.url == '/pathways/' %}aria-current="page"{% endif %}>Pathways</a>
-    </nav>
-  </div>
-</header>
-/* Hide only the menu links */
-.site-header .site-nav { display: none !important; }
+<li><a href="{{ '/explore/' | relative_url }}">Explore</a></li>
