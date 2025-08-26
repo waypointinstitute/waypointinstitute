@@ -1,28 +1,36 @@
 name: Update Substack Feed
+
 on:
   workflow_dispatch:
   schedule:
-    - cron: '17 */6 * * *'   # every 6 hours (adjust as you like)
+    - cron: "0 */6 * * *"   # optional: every 6 hours
 
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: write   # we commit _data/substack.json
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
-        with: { node-version: '20' }
+        with:
+          node-version: '20'
+
+      - name: Install deps
+        run: |
+          npm init -y >/dev/null 2>&1 || true
+          npm i rss-parser@3
+
       - name: Fetch Substack RSS
+        env:
+          SUBSTACK_FEED: https://waypointinstitute.substack.com/feed
         run: node scripts/substack_rss.js
+
       - name: Commit JSON (if changed)
         run: |
-          if [[ -n "$(git status --porcelain)" ]]; then
-            git config user.name  "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add _data/substack.json
-            git commit -m "chore: update Substack feed"
-            git push
-          else
-            echo "No changes."
-          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add _data/substack.json
+          git diff --cached --quiet && echo "No changes" || git commit -m "chore: update Substack feed"
+          git push
