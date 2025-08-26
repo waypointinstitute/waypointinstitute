@@ -106,3 +106,11 @@ h1,h2,h3{line-height:1.2;margin:1rem 0 .5rem}
   .waypoint .node, .waypoint .label { transition:none; }
 }
 
+/* Atrium utilities */
+.center { text-align:center }
+.bignum { font-size:2rem; font-weight:700; margin:.25rem 0 }
+.muted { opacity:.8 }
+.tabbtn {
+  padding:.45rem .75rem; border-radius:8px; border:1px solid #222; background:#0f1115; color:#e8e8ec; cursor:pointer
+}
+.tabbtn.active { background:#1a1f2a; border-color:#2a2f3a }
