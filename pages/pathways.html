@@ -1,0 +1,65 @@
+---
+layout: page
+title: Reading Pathways
+permalink: /pathways/
+---
+
+<section class="pathways">
+  <div class="text-center mb-8">
+    <div class="inline-flex items-center gap-3 mb-3">
+      <span class="rounded-full" style="display:grid;place-items:center;width:48px;height:48px;background:linear-gradient(135deg,#4ade80,#10b981);border:1px solid rgba(255,255,255,.2);">
+        <i data-lucide="map" style="width:22px;height:22px;color:#fff"></i>
+      </span>
+      <h1 class="font-serif" style="font-size:2rem;font-weight:700">Reading Pathways</h1>
+    </div>
+    <p style="opacity:.8">Curated sequences to explore themes in depth</p>
+  </div>
+
+  <!-- Filters -->
+  <div class="card" style="margin-bottom:1rem">
+    <div class="filters" style="display:grid;gap:.6rem;grid-template-columns:1fr;align-items:center">
+      <div style="position:relative">
+        <i data-lucide="search" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);width:18px;height:18px;opacity:.6"></i>
+        <input id="pw-search" placeholder="Search pathways…" style="width:100%;padding:.6rem .75rem .6rem 2rem;background:#0f1115;border:1px solid #222;border-radius:10px;color:#e8e8ec">
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem">
+        <select id="pw-difficulty" style="background:#0f1115;border:1px solid #222;border-radius:10px;color:#e8e8ec;padding:.55rem .6rem">
+          <option value="all">All levels</option>
+          <option value="intro">Intro</option>
+          <option value="intermediate">Intermediate</option>
+          <option value="advanced">Advanced</option>
+        </select>
+        <select id="pw-theme" style="background:#0f1115;border:1px solid #222;border-radius:10px;color:#e8e8ec;padding:.55rem .6rem">
+          <option value="all">All themes</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grid -->
+  <div id="pw-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem"></div>
+
+  <!-- Modal -->
+  <div id="pw-modal" class="pw-modal" hidden>
+    <div class="pw-modal__backdrop"></div>
+    <div class="pw-modal__dialog card">
+      <div class="pw-modal__head">
+        <div>
+          <h2 id="pw-title" class="font-serif" style="margin:0 0 .25rem"></h2>
+          <div id="pw-meta" class="muted" style="font-size:.95rem"></div>
+        </div>
+        <button id="pw-close" class="btn-outline" style="white-space:nowrap">Close</button>
+      </div>
+      <div id="pw-body" class="pw-steps"></div>
+    </div>
+  </div>
+</section>
+
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+<!-- Serialize data -->
+<script>
+  window.PATHWAYS_DATA = {{ site.data.pathways | jsonify }};
+</script>
+
+<script src="{{ '/assets/js/pathways.js' | relative_url }}"></script>
