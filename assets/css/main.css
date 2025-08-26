@@ -214,6 +214,43 @@ header nav a[aria-current="page"]{
   color:#0b0c0f;
   font-weight:600;
 }
+/* Hide the entire header ONLY on the Explore page */
+.page-explore .site-header {
+  display: none !important;
+}
+
+/* Layout for the tiny header row (brand + one link) */
+.site-header .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+}
+
+/* Single-pill Explore button style */
+.site-nav .pill {
+  display: inline-block;
+  padding: .45rem .85rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(255,255,255,.16);
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+  color: var(--text, #e5e7eb);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: .95rem;
+  letter-spacing: .01em;
+  transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+}
+.site-nav .pill:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255,255,255,.28);
+  box-shadow: 0 6px 18px rgba(0,0,0,.25);
+}
+
+/* Optional: give the Explore pill a subtle brand hue */
+.pill-explore {
+  backdrop-filter: blur(6px);
+}
 
 /* safety: hidden should always hide */
 [hidden]{display:none !important;}
