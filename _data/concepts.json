@@ -1,0 +1,18 @@
+[
+  {
+    "id": "sacred-time",
+    "title": "Sacred Time",
+    "summary": "Distinguishing kairos from chronos in ritual structure and lived experience.",
+    "status": "published",
+    "tags": ["time", "ritual", "phenomenology"],
+    "content_html": "<p>Kairos denotes a qualitative break in ordinary time…</p>"
+  },
+  {
+    "id": "iconicity",
+    "title": "Iconicity",
+    "summary": "How resemblance mediates presence without collapse into idolatry.",
+    "status": "draft",
+    "tags": ["representation", "patristics"],
+    "content_html": "<p>Iconicity functions as an analogical bridge…</p>"
+  }
+]
