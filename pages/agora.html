@@ -1,39 +1,107 @@
 ---
-layout: page
+layout: default
 title: The Agora
 permalink: /agora/
 ---
 
-<div class="agora">
-  <div class="text-center mb-8">
-    <h1 class="font-serif" style="font-size:2.2rem;font-weight:800">The Agora</h1>
-    <p class="muted">Essays &amp; dispatches from Substack</p>
-  </div>
+<section class="page-head">
+  <div class="icon-pill" style="--pill: linear-gradient(135deg,#f59e0b,#ef4444)"></div>
+  <h1 class="page-title">The Agora</h1>
+  <p class="page-sub">Essays &amp; dispatches from the intersection of faith and inquiry</p>
+</section>
 
-  {% assign feed = site.data.substack %}
-  {% if feed and feed.items and feed.items.size > 0 %}
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1rem">
-      {% for post in feed.items %}
-        <article class="card">
-          <div class="card-section">
-            <div class="muted" style="font-size:.85rem;margin-bottom:.35rem">
-              {{ post.pubDate | date: "%B %e, %Y" }}
-            </div>
-            <h3 class="font-serif" style="margin:.2rem 0 .4rem;font-size:1.25rem">
-              <a href="{{ post.link }}" target="_blank" rel="noopener">{{ post.title }}</a>
-            </h3>
-            {% assign teaser = post.content_html | strip_html | truncatewords: 40 %}
-            <p class="muted">{{ teaser }}</p>
-            <div style="margin-top:.6rem">
-              <a class="btn" href="{{ post.link }}" target="_blank" rel="noopener">Read on Substack</a>
-            </div>
-          </div>
-        </article>
-      {% endfor %}
-    </div>
-  {% else %}
-    <div class="card"><div class="card-section">
-      <p class="muted">No mirrored posts yet. Try running <em>Update Substack Feed</em> in the Actions tab.</p>
-    </div></div>
-  {% endif %}
+<!-- Subscribe (Substack embed or a simple link) -->
+<div class="card card-muted" style="max-width: 760px;">
+  <div class="card-body" style="text-align:center">
+    <h3 class="card-title" style="margin-bottom:.5rem">Stay Connected</h3>
+    <p class="muted" style="margin-bottom:1rem">Get our latest insights delivered to your inbox</p>
+    <a class="btn btn-primary" href="https://waypointinstitute.substack.com/" target="_blank" rel="noopener">Subscribe on Substack</a>
+  </div>
 </div>
+
+{% assign posts = site.data.substack | sort: "date" | reverse %}
+{% assign featured = posts | where: "featured", true | first %}
+{% assign rest = posts %}
+{% if featured %}
+  {% assign rest = posts | where_exp: "p", "p.featured != true" %}
+{% endif %}
+
+<!-- Featured -->
+{% if featured %}
+<div class="card card-accent">
+  <div class="card-body">
+    <div class="eyebrow">Featured</div>
+    <h2 class="card-title">{{ featured.title }}</h2>
+    {% if featured.summary %}<p class="muted lead">{{ featured.summary }}</p>{% endif %}
+    <div class="meta muted">
+      <span>{{ featured.date | date: "%B %-d, %Y" }}</span>
+      {% if featured.minutes %} · <span>{{ featured.minutes }} min read</span>{% endif %}
+    </div>
+    {% if featured.tags %}
+      <div class="tags">
+        {% for t in featured.tags %}
+        <span class="tag">{{ t }}</span>
+        {% endfor %}
+      </div>
+    {% endif %}
+    <a class="btn" href="{{ featured.url }}" target="_blank" rel="noopener">Read on Substack →</a>
+  </div>
+</div>
+{% endif %}
+
+<!-- Filters -->
+<div class="filters">
+  <input id="agora-search" class="input" placeholder="Search essays and dispatches…">
+  <select id="agora-tag" class="input">
+    <option value="">All topics</option>
+    {% assign all_tags = "" | split: "" %}
+    {% for p in posts %}
+      {% if p.tags %}{% assign all_tags = all_tags | concat: p.tags %}{% endif %}
+    {% endfor %}
+    {% assign uniq = all_tags | uniq | sort %}
+    {% for t in uniq %}<option value="{{ t }}">{{ t }}</option>{% endfor %}
+  </select>
+</div>
+
+<!-- Grid -->
+<div id="agora-grid" class="grid">
+  {% for p in rest %}
+  <article class="card card-muted" data-title="{{ p.title | downcase }}" data-summary="{{ p.summary | downcase }}" data-tags="{% if p.tags %}{{ p.tags | join: ' ' | downcase }}{% endif %}">
+    <div class="card-body">
+      <div class="meta muted">
+        <span>{{ p.date | date: "%B %-d, %Y" }}</span>{% if p.minutes %} · <span>{{ p.minutes }} min{% endif %}
+      </div>
+      <h3 class="card-title">{{ p.title }}</h3>
+      {% if p.summary %}<p class="muted">{{ p.summary }}</p>{% endif %}
+      {% if p.tags %}
+      <div class="tags">
+        {% for t in p.tags %}<span class="tag">{{ t }}</span>{% endfor %}
+      </div>
+      {% endif %}
+      <a class="btn btn-ghost" href="{{ p.url }}" target="_blank" rel="noopener">Read on Substack →</a>
+    </div>
+  </article>
+  {% endfor %}
+</div>
+
+<!-- Tiny client-side filter (no build step needed) -->
+<script>
+(function(){
+  const q = document.getElementById('agora-search');
+  const tag = document.getElementById('agora-tag');
+  const cards = Array.from(document.querySelectorAll('#agora-grid .card'));
+
+  function apply(){
+    const s = (q.value || '').trim().toLowerCase();
+    const t = (tag.value || '').trim().toLowerCase();
+    cards.forEach(c => {
+      const hay = (c.dataset.title + ' ' + c.dataset.summary + ' ' + c.dataset.tags).trim();
+      const okS = !s || hay.includes(s);
+      const okT = !t || (c.dataset.tags || '').split(' ').includes(t);
+      c.style.display = (okS && okT) ? '' : 'none';
+    });
+  }
+  q.addEventListener('input', apply);
+  tag.addEventListener('change', apply);
+})();
+</script>
