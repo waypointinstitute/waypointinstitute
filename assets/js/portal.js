@@ -1,5 +1,8 @@
 (function(){
   if (window.lucide) window.lucide.createIcons();
+  const CFG = window.PORTAL_CONFIG || {};
+  const gLink = document.getElementById('portal-gform-link');
+  if (gLink && CFG.externalFormUrl) gLink.href = CFG.externalFormUrl;
 
   // Panels
   const panels = ['consent','survey','narrative','complete'];
