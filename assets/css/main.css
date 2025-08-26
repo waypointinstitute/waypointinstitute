@@ -161,3 +161,9 @@ h1,h2,h3{line-height:1.2;margin:1rem 0 .5rem}
 .cl-modal__head{display:flex;justify-content:space-between;align-items:center;gap:.75rem;margin-bottom:.5rem}
 .cl-body{opacity:.95}
 
+/* Shared badges/buttons already defined above; only add if missing */
+.badge{display:inline-flex;align-items:center;gap:.35rem;padding:.2rem .5rem;border:1px solid #333;border-radius:999px;background:#111}
+.badge--green{border-color:#14532d;background:rgba(34,197,94,.12);color:#a7f3d0}
+.badge--blue{border-color:#1e3a8a;background:rgba(59,130,246,.12);color:#bfdbfe}
+.badge--purple{border-color:#4c1d95;background:rgba(168,85,247,.12);color:#e9d5ff}
+.btn{background:linear-gradient(90deg,#3b82f6,#8b5cf6);color:#fff;padding:.55rem .9rem;border-radius:10px;text-decoration:none;border:1px solid rgba(255,255,255,.15)}
