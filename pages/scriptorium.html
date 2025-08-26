@@ -1,0 +1,50 @@
+---
+layout: page
+title: Scriptorium
+permalink: /scriptorium/
+---
+
+<section class="scriptorium">
+  <div class="text-center mb-8">
+    <div class="inline-flex items-center gap-3 mb-3">
+      <span class="rounded-full" style="display:grid;place-items:center;width:48px;height:48px;background:linear-gradient(135deg,#fb7185,#ec4899);border:1px solid rgba(255,255,255,.2);">
+        <i data-lucide="book-open" style="width:22px;height:22px;color:#fff"></i>
+      </span>
+      <h1 class="font-serif" style="font-size:2rem;font-weight:700">Scriptorium</h1>
+    </div>
+    <p style="opacity:.8">A curated library for deeper study</p>
+  </div>
+
+  <!-- Filters -->
+  <div class="card" style="margin-bottom:1rem">
+    <div class="filters" style="display:grid;gap:.6rem;grid-template-columns:1fr;align-items:center">
+      <div style="position:relative">
+        <i data-lucide="search" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);width:18px;height:18px;opacity:.6"></i>
+        <input id="sc-search" placeholder="Search books…" style="width:100%;padding:.6rem .75rem .6rem 2rem;background:#0f1115;border:1px solid #222;border-radius:10px;color:#e8e8ec">
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem">
+        <select id="sc-difficulty" style="background:#0f1115;border:1px solid #222;border-radius:10px;color:#e8e8ec;padding:.55rem .6rem">
+          <option value="all">All</option>
+          <option value="beginner">Beginner</option>
+          <option value="intermediate">Intermediate</option>
+          <option value="advanced">Advanced</option>
+        </select>
+        <select id="sc-tag" style="background:#0f1115;border:1px solid #222;border-radius:10px;color:#e8e8ec;padding:.55rem .6rem">
+          <option value="all">All tags</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grid -->
+  <div id="sc-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem"></div>
+</section>
+
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+<!-- Serialize data -->
+<script>
+  window.SCRIPTORIUM_BOOKS = {{ site.data.books | jsonify }};
+</script>
+
+<script src="{{ '/assets/js/scriptorium.js' | relative_url }}"></script>
