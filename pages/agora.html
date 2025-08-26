@@ -1,107 +1,25 @@
 ---
 layout: default
-title: The Agora
-permalink: /agora/
+title: Agora
 ---
 
-<section class="page-head">
-  <div class="icon-pill" style="--pill: linear-gradient(135deg,#f59e0b,#ef4444)"></div>
-  <h1 class="page-title">The Agora</h1>
-  <p class="page-sub">Essays &amp; dispatches from the intersection of faith and inquiry</p>
+<section class="page agora">
+  <div class="container text-center" style="padding: 4rem 0;">
+    <div style="margin-bottom: 2rem;">
+      <h1 class="text-4xl font-bold text-white font-serif">The Agora</h1>
+      <p class="text-xl text-amber-200 mt-2">
+        Essays & dispatches from the intersection of faith and inquiry
+      </p>
+    </div>
+
+    <div class="bg-white/5 backdrop-blur-md border border-white/20 rounded-2xl p-10 max-w-lg mx-auto shadow-lg">
+      <p class="text-blue-200 mb-6">
+        Our long-form essays live on Substack. Click below to read the latest dispatches.
+      </p>
+      <a href="https://waypointinstitute.substack.com" target="_blank" rel="noopener noreferrer"
+         class="inline-block px-6 py-3 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-xl shadow-lg transition">
+        Visit Substack
+      </a>
+    </div>
+  </div>
 </section>
-
-<!-- Subscribe (Substack embed or a simple link) -->
-<div class="card card-muted" style="max-width: 760px;">
-  <div class="card-body" style="text-align:center">
-    <h3 class="card-title" style="margin-bottom:.5rem">Stay Connected</h3>
-    <p class="muted" style="margin-bottom:1rem">Get our latest insights delivered to your inbox</p>
-    <a class="btn btn-primary" href="https://waypointinstitute.substack.com/" target="_blank" rel="noopener">Subscribe on Substack</a>
-  </div>
-</div>
-
-{% assign posts = site.data.substack | sort: "date" | reverse %}
-{% assign featured = posts | where: "featured", true | first %}
-{% assign rest = posts %}
-{% if featured %}
-  {% assign rest = posts | where_exp: "p", "p.featured != true" %}
-{% endif %}
-
-<!-- Featured -->
-{% if featured %}
-<div class="card card-accent">
-  <div class="card-body">
-    <div class="eyebrow">Featured</div>
-    <h2 class="card-title">{{ featured.title }}</h2>
-    {% if featured.summary %}<p class="muted lead">{{ featured.summary }}</p>{% endif %}
-    <div class="meta muted">
-      <span>{{ featured.date | date: "%B %-d, %Y" }}</span>
-      {% if featured.minutes %} · <span>{{ featured.minutes }} min read</span>{% endif %}
-    </div>
-    {% if featured.tags %}
-      <div class="tags">
-        {% for t in featured.tags %}
-        <span class="tag">{{ t }}</span>
-        {% endfor %}
-      </div>
-    {% endif %}
-    <a class="btn" href="{{ featured.url }}" target="_blank" rel="noopener">Read on Substack →</a>
-  </div>
-</div>
-{% endif %}
-
-<!-- Filters -->
-<div class="filters">
-  <input id="agora-search" class="input" placeholder="Search essays and dispatches…">
-  <select id="agora-tag" class="input">
-    <option value="">All topics</option>
-    {% assign all_tags = "" | split: "" %}
-    {% for p in posts %}
-      {% if p.tags %}{% assign all_tags = all_tags | concat: p.tags %}{% endif %}
-    {% endfor %}
-    {% assign uniq = all_tags | uniq | sort %}
-    {% for t in uniq %}<option value="{{ t }}">{{ t }}</option>{% endfor %}
-  </select>
-</div>
-
-<!-- Grid -->
-<div id="agora-grid" class="grid">
-  {% for p in rest %}
-  <article class="card card-muted" data-title="{{ p.title | downcase }}" data-summary="{{ p.summary | downcase }}" data-tags="{% if p.tags %}{{ p.tags | join: ' ' | downcase }}{% endif %}">
-    <div class="card-body">
-      <div class="meta muted">
-        <span>{{ p.date | date: "%B %-d, %Y" }}</span>{% if p.minutes %} · <span>{{ p.minutes }} min{% endif %}
-      </div>
-      <h3 class="card-title">{{ p.title }}</h3>
-      {% if p.summary %}<p class="muted">{{ p.summary }}</p>{% endif %}
-      {% if p.tags %}
-      <div class="tags">
-        {% for t in p.tags %}<span class="tag">{{ t }}</span>{% endfor %}
-      </div>
-      {% endif %}
-      <a class="btn btn-ghost" href="{{ p.url }}" target="_blank" rel="noopener">Read on Substack →</a>
-    </div>
-  </article>
-  {% endfor %}
-</div>
-
-<!-- Tiny client-side filter (no build step needed) -->
-<script>
-(function(){
-  const q = document.getElementById('agora-search');
-  const tag = document.getElementById('agora-tag');
-  const cards = Array.from(document.querySelectorAll('#agora-grid .card'));
-
-  function apply(){
-    const s = (q.value || '').trim().toLowerCase();
-    const t = (tag.value || '').trim().toLowerCase();
-    cards.forEach(c => {
-      const hay = (c.dataset.title + ' ' + c.dataset.summary + ' ' + c.dataset.tags).trim();
-      const okS = !s || hay.includes(s);
-      const okT = !t || (c.dataset.tags || '').split(' ').includes(t);
-      c.style.display = (okS && okT) ? '' : 'none';
-    });
-  }
-  q.addEventListener('input', apply);
-  tag.addEventListener('change', apply);
-})();
-</script>
