@@ -378,3 +378,39 @@ header nav a[aria-current="page"]{
 
 /* Ensure the site header keeps the brand link on this page */
 body .site-header .site-brand { display: inline-block; }
+/* --- Explore: spacing + upright content --- */
+.explore-hero { padding: 3rem 1rem 6rem; } /* more room above the arc */
+
+.explore-orbs {
+  /* make the arc “bigger” so items don’t collide */
+  height: 420px;       /* larger radius than before */
+  width: 70%;          /* a touch wider */
+}
+
+.explore-orbs > li {
+  /* rotate to angle, then push outward further (larger than -100%) */
+  transform: rotate(var(--angle)) translateY(-185%);
+  transform-origin: bottom center;
+}
+
+/* Keep icons/labels upright after the parent rotation */
+.explore-orbs > li .orb {
+  transform: rotate(calc(-1 * var(--angle)));
+}
+
+/* Maintain upright+scale on hover */
+.explore-orbs > li .orb:hover,
+.explore-orbs > li .orb:focus-visible {
+  transform: rotate(calc(-1 * var(--angle))) scale(1.06);
+}
+
+/* A little stronger drop shadow so the orbs separate visually */
+.orb { box-shadow: 0 10px 28px rgba(0,0,0,.35); }
+
+/* Mobile polish: more compact grid under the logo */
+@media (max-width: 750px) {
+  .explore-hero { padding: 2rem 1rem 2.5rem; }
+  .explore-orbs { width: 100%; height: auto; gap: 1rem 1.25rem; }
+  .orb { width: 92px; height: 92px; }
+  .orb .orb-label { font-size: .92rem; }
+}
