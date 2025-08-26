@@ -1,0 +1,107 @@
+---
+layout: page
+title: Research Atrium
+permalink: /atrium/
+---
+
+<section class="atrium">
+  <div class="text-center mb-8">
+    <div class="inline-flex items-center gap-3 mb-3">
+      <span class="rounded-full" style="display:grid;place-items:center;width:48px;height:48px;background:linear-gradient(135deg,#818cf8,#3b82f6);border:1px solid rgba(255,255,255,.2);">
+        <i data-lucide="bar-chart-3" style="width:22px;height:22px;color:#fff"></i>
+      </span>
+      <h1 class="font-serif" style="font-size:2rem;font-weight:700">Research Atrium</h1>
+    </div>
+    <p style="opacity:.8">Insights from spiritual experience data</p>
+
+    <div class="flex" style="gap:.5rem;justify-content:center;margin-top:.75rem;flex-wrap:wrap">
+      <a id="atrium-dl-full" class="btn-outline" href="#" role="button">
+        <i data-lucide="download" style="width:16px;height:16px"></i> Download Dataset
+      </a>
+      <a id="atrium-dl-summary" class="btn-outline" href="#" role="button">
+        <i data-lucide="filter" style="width:16px;height:16px"></i> Download Summary
+      </a>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1rem;margin-bottom:1.25rem">
+    <div class="card center">
+      <i data-lucide="users" style="width:28px;height:28px;color:#60a5fa"></i>
+      <div class="bignum" id="stat-total">0</div>
+      <div class="muted">Total Experiences</div>
+    </div>
+    <div class="card center">
+      <i data-lucide="trending-up" style="width:28px;height:28px;color:#4ade80"></i>
+      <div class="bignum" id="stat-avg-intensity">0</div>
+      <div class="muted">Avg Intensity</div>
+    </div>
+    <div class="card center">
+      <i data-lucide="globe" style="width:28px;height:28px;color:#a78bfa"></i>
+      <div class="bignum" id="stat-traditions">0</div>
+      <div class="muted">Traditions</div>
+    </div>
+    <div class="card center">
+      <i data-lucide="bar-chart-3" style="width:28px;height:28px;color:#fbbf24"></i>
+      <div class="bignum" id="stat-public">0</div>
+      <div class="muted">Public Excerpts</div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs card" style="padding:0">
+    <div class="tablist" role="tablist" style="display:flex;gap:.5rem;flex-wrap:wrap;padding:.5rem;border-bottom:1px solid #222;background:#111">
+      <button class="tabbtn active" data-tab="overview">Overview</button>
+      <button class="tabbtn" data-tab="contexts">Contexts</button>
+      <button class="tabbtn" data-tab="traditions">Traditions</button>
+      <button class="tabbtn" data-tab="patterns">Patterns</button>
+    </div>
+
+    <div class="tabpanel" data-panel="overview" style="padding:1rem">
+      <div class="grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem">
+        <div class="card">
+          <h3 class="font-serif" style="margin:0 0 .5rem">Religious Engagement</h3>
+          <canvas id="chart-religiosity" height="300"></canvas>
+        </div>
+        <div class="card">
+          <h3 class="font-serif" style="margin:0 0 .5rem">Experience Intensity</h3>
+          <canvas id="chart-intensity" height="300"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="tabpanel" data-panel="contexts" style="padding:1rem;display:none">
+      <div class="card">
+        <h3 class="font-serif" style="margin:0 0 .25rem">Experience Contexts</h3>
+        <p class="muted" style="margin:0 0 .75rem">Where and when spiritual experiences occur</p>
+        <canvas id="chart-contexts" height="360"></canvas>
+      </div>
+    </div>
+
+    <div class="tabpanel" data-panel="traditions" style="padding:1rem;display:none">
+      <div class="card">
+        <h3 class="font-serif" style="margin:0 0 .25rem">Religious Traditions</h3>
+        <p class="muted" style="margin:0 0 .75rem">Distribution across faith communities</p>
+        <canvas id="chart-traditions" height="360"></canvas>
+      </div>
+    </div>
+
+    <div class="tabpanel" data-panel="patterns" style="padding:1rem;display:none">
+      <div class="card">
+        <h3 class="font-serif" style="margin:0 0 .35rem">Patterns (coming soon)</h3>
+        <p class="muted">We’ll surface co-occurring attributes and time trends here.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- dependencies -->
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+
+<!-- data → JS -->
+<script>
+  window.ATRIUM_EXPERIENCES = {{ site.data.experiences | jsonify }};
+</script>
+
+<script src="{{ '/assets/js/atrium.js' | relative_url }}"></script>
