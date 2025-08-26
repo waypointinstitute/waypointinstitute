@@ -1,0 +1,174 @@
+---
+layout: page
+title: Spiritual Experience Portal
+permalink: /portal/
+---
+
+<section class="portal">
+  <div class="text-center mb-8">
+    <div class="inline-flex items-center gap-3 mb-3">
+      <span class="rounded-full" style="display:grid;place-items:center;width:48px;height:48px;background:linear-gradient(135deg,#a78bfa,#3b82f6);border:1px solid rgba(255,255,255,.2);">
+        <i data-lucide="sparkles" style="width:22px;height:22px;color:#fff"></i>
+      </span>
+      <h1 class="font-serif" style="font-size:2rem;font-weight:700">Spiritual Experience Portal</h1>
+    </div>
+    <p style="opacity:.8">Share your sacred encounters to advance our understanding.</p>
+  </div>
+
+  <!-- Progress -->
+  <div class="card" style="margin-bottom:1rem">
+    <div class="flex" style="display:flex;align-items:center;justify-content:center;gap:.75rem;flex-wrap:wrap">
+      <div class="step-pill" data-step-pill="consent"><span>1</span><em>Privacy & Consent</em></div>
+      <div class="connector"></div>
+      <div class="step-pill" data-step-pill="survey"><span>2</span><em>About You</em></div>
+      <div class="connector"></div>
+      <div class="step-pill" data-step-pill="narrative"><span>3</span><em>Your Experience</em></div>
+      <div class="connector"></div>
+      <div class="step-pill" data-step-pill="complete"><span>4</span><em>Thank You</em></div>
+    </div>
+  </div>
+
+  <!-- Panels -->
+  <div class="card" id="portal-card">
+    <!-- CONSENT -->
+    <div class="panel" data-panel="consent">
+      <h2 class="font-serif" style="margin:0 0 .75rem">Privacy & Your Rights</h2>
+
+      <div class="info">
+        <h3>What we collect & why</h3>
+        <p>
+          We collect accounts of spiritual experiences to inform public humanities and scholarship.
+          Your responses help identify patterns and contextual insights. You can request deletion at any time.
+          No medical advice is provided or implied.
+        </p>
+      </div>
+
+      <label class="checkrow">
+        <input type="checkbox" id="consent_research_use">
+        <span>I consent to research use of my anonymized data <strong>(required)</strong></span>
+      </label>
+
+      <label class="checkrow">
+        <input type="checkbox" id="consent_public_excerpt">
+        <span>I consent to public display of anonymized excerpts (optional)</span>
+      </label>
+
+      <div class="actions">
+        <button class="btn" id="next-to-survey" disabled>
+          Continue <i data-lucide="arrow-right" style="width:16px;height:16px"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- SURVEY -->
+    <div class="panel" data-panel="survey" hidden>
+      <h2 class="font-serif" style="margin:0 0 .75rem">Tell Us About Yourself</h2>
+
+      <div class="grid2">
+        <label class="field">
+          <span>Age Range *</span>
+          <select id="age_bracket" required>
+            <option value="">Select an option…</option>
+            <option>13-17</option><option>18-24</option><option>25-34</option>
+            <option>35-49</option><option>50-64</option><option>65+</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span>Gender *</span>
+          <select id="sex" required>
+            <option value="">Select an option…</option>
+            <option value="female">Female</option><option value="male">Male</option>
+            <option value="intersex">Intersex</option><option value="prefer_not_say">Prefer not to say</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span>Religious Engagement *</span>
+          <select id="religiosity" required>
+            <option value="">Select an option…</option>
+            <option value="not">Not religious</option>
+            <option value="somewhat">Somewhat religious</option>
+            <option value="very">Very religious</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span>Tradition</span>
+          <input id="tradition" placeholder="e.g., catholic, evangelical, orthodox">
+        </label>
+
+        <label class="field">
+          <span>Context</span>
+          <input id="context" placeholder="e.g., prayer, liturgy, retreat">
+        </label>
+
+        <label class="field">
+          <span>Country</span>
+          <input id="country" placeholder="e.g., US, GB">
+        </label>
+
+        <label class="field">
+          <span>Intensity (1–5)</span>
+          <input id="intensity" type="number" min="1" max="5" inputmode="numeric" placeholder="1–5">
+        </label>
+
+        <label class="field">
+          <span>Duration (minutes)</span>
+          <input id="duration_minutes" type="number" min="0" step="1" inputmode="numeric" placeholder="e.g., 10">
+        </label>
+      </div>
+
+      <div class="actions">
+        <button class="btn-outline" id="back-to-consent">
+          <i data-lucide="arrow-left" style="width:16px;height:16px"></i> Back
+        </button>
+        <button class="btn" id="next-to-narrative" disabled>
+          Continue <i data-lucide="arrow-right" style="width:16px;height:16px"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- NARRATIVE -->
+    <div class="panel" data-panel="narrative" hidden>
+      <h2 class="font-serif" style="margin:0 0 .75rem">Share Your Experience</h2>
+      <p class="muted" style="margin:.25rem 0 .75rem">Aim for at least ~50 words. Avoid personal identifiers.</p>
+
+      <label class="field">
+        <span>Experience narrative *</span>
+        <textarea id="narrative_text" rows="8" placeholder="Describe what happened…"></textarea>
+      </label>
+
+      <div class="actions">
+        <button class="btn-outline" id="back-to-survey">
+          <i data-lucide="arrow-left" style="width:16px;height:16px"></i> Back
+        </button>
+        <button class="btn" id="submit-experience" disabled>
+          Submit <i data-lucide="check" style="width:16px;height:16px"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- COMPLETE -->
+    <div class="panel" data-panel="complete" hidden>
+      <h2 class="font-serif" style="margin:0 0 .75rem">Thank You for Contributing</h2>
+      <p>Your submission has been recorded.</p>
+      <p class="muted">If you opted in, anonymized excerpts may appear in research summaries.</p>
+      <div class="actions">
+        <a class="btn-outline" href="{{ '/atrium/' | relative_url }}">See aggregate insights</a>
+        <a class="btn" href="{{ '/hub/' | relative_url }}">Return to Hub</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- config: set endpoint to use Formspree/Basin/etc., or leave blank for CSV download -->
+<script>
+  window.PORTAL_CONFIG = {
+    endpoint: "",        // e.g., "https://formspree.io/f/yourid"  (leave "" to download CSV instead)
+    method: "POST"
+  };
+</script>
+
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<script src="{{ '/assets/js/portal.js' | relative_url }}"></script>
