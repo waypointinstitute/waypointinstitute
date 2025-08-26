@@ -7,7 +7,9 @@ permalink: /explore/
 <main class="explore-hub">
   <section class="hub-wrap">
     <!-- Transparent logo (cache-busted on deploy) -->
-    <img class="hub-logo" src="{{ '/assets/logo.png?v=' | append: site.github.build_revision | relative_url }}" alt="Waypoint Institute logo">
+    <img class="hub-logo" src="{{ '/assets/logo.png?v=' | append: site.github.build_revision | relative_url }}" alt="Waypoint Institute logo"
+      data-center-x="47"
+      data-center-y="46">
 
     <!-- Spokes (drawn from the logo center) -->
     <svg class="hub-spokes" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg>
@@ -98,16 +100,15 @@ permalink: /explore/
 </style>
 
 <script>
-/* 8 destinations (6 live + 2 placeholders) — order matches compass points */
 const DESTS = [
-  { id:"pathways",     label:"Pathways",     href:"{{ '/pathways/'     | relative_url }}", icon:"🗺️" }, // top
-  { id:"scriptorium",  label:"Scriptorium",  href:"{{ '/scriptorium/'  | relative_url }}", icon:"📖" }, // top-right
-  { id:"atrium",       label:"Atrium",       href:"{{ '/atrium/'       | relative_url }}", icon:"📊" }, // right
-  { id:"portal",       label:"Portal",       href:"{{ '/portal/'       | relative_url }}", icon:"✨" }, // bottom-right
-  { id:"workshop",     label:"Workshop",     href:"#",                                        icon:"🛠️" }, // bottom
-  { id:"observatory",  label:"Observatory",  href:"#",                                        icon:"⭐" }, // bottom-left
-  { id:"agora",        label:"Agora",        href:"{{ '/agora/'        | relative_url }}", icon:"👥" }, // left
-  { id:"concept-lab",  label:"Concept Lab",  href:"{{ '/concept-lab/'  | relative_url }}", icon:"🧪" }, // top-left
+  { id:"pathways",     label:"Pathways",     href:"{{ '/pathways/'     | relative_url }}", icon:"🗺️" },
+  { id:"scriptorium",  label:"Scriptorium",  href:"{{ '/scriptorium/'  | relative_url }}", icon:"📖" },
+  { id:"atrium",       label:"Atrium",       href:"{{ '/atrium/'       | relative_url }}", icon:"📊" },
+  { id:"portal",       label:"Portal",       href:"{{ '/portal/'       | relative_url }}", icon:"✨" },
+  { id:"workshop",     label:"Workshop",     href:"#",                                        icon:"🛠️" },
+  { id:"observatory",  label:"Observatory",  href:"#",                                        icon:"⭐" },
+  { id:"agora",        label:"Agora",        href:"{{ '/agora/'        | relative_url }}", icon:"👥" },
+  { id:"concept-lab",  label:"Concept Lab",  href:"{{ '/concept-lab/'  | relative_url }}", icon:"🧪" },
 ];
 
 (function initHub(){
@@ -132,28 +133,36 @@ const DESTS = [
     const wrapRect = wrap.getBoundingClientRect();
     const logoRect = logo.getBoundingClientRect();
 
-    // center of the logo relative to the wrap
-    const cx = (logoRect.left - wrapRect.left) + logoRect.width / 2;
-    const cy = (logoRect.top  - wrapRect.top ) + logoRect.height / 2;
+    // Read manual center nudges (defaults 50/50)
+    const biasX = parseFloat(logo.dataset.centerX || '50') / 100; // 0..1
+    const biasY = parseFloat(logo.dataset.centerY || '50') / 100;
 
-    // radius tied to the logo size; clamped for responsiveness
+    // Center of the *art* inside the logo box
+    const cx = (logoRect.left - wrapRect.left) + logoRect.width  * biasX;
+    const cy = (logoRect.top  - wrapRect.top ) + logoRect.height * biasY;
+
+    // Radius tied to logo size; clamp for responsiveness
     const baseR = Math.min(logoRect.width, logoRect.height) * 0.52;
     const r = Math.max(130, Math.min(baseR, 260));
 
-    // 8 compass angles, start at top (-90°) and go clockwise by 45°
+    // 8 compass angles, start at top (-90°)
     const angles = Array.from({length:8}, (_,i) => (-90 + i*45) * Math.PI/180);
 
-    // position nodes
+    // place orbs
     Array.from(list.children).forEach((li, i) => {
       const a = angles[i];
       const x = cx + Math.cos(a) * r;
       const y = cy + Math.sin(a) * r;
       li.style.left = `${x}px`;
       li.style.top  = `${y}px`;
+      li.style.transform = 'translate(-50%, -50%)';
     });
 
-    // spokes
+    // draw spokes from the true center
     spokes.innerHTML = '';
+    const cpx = (cx / wrapRect.width)  * 100;
+    const cpy = (cy / wrapRect.height) * 100;
+
     angles.forEach(a => {
       const x = cx + Math.cos(a) * r;
       const y = cy + Math.sin(a) * r;
@@ -161,8 +170,8 @@ const DESTS = [
       const y2 = (y / wrapRect.height) * 100;
 
       const line = document.createElementNS('http://www.w3.org/2000/svg','line');
-      line.setAttribute('x1','50');
-      line.setAttribute('y1','50');
+      line.setAttribute('x1', cpx.toFixed(3));
+      line.setAttribute('y1', cpy.toFixed(3));
       line.setAttribute('x2', x2.toFixed(3));
       line.setAttribute('y2', y2.toFixed(3));
       line.setAttribute('stroke','rgba(90,165,255,.28)');
@@ -172,9 +181,9 @@ const DESTS = [
     });
   }
 
-  // first layout after images load (logo size matters), then on resize
   if (document.readyState === 'complete') layout();
   else window.addEventListener('load', layout);
   window.addEventListener('resize', layout);
 })();
 </script>
+
