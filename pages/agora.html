@@ -1,65 +1,39 @@
----
-layout: page
-title: Agora
-permalink: /agora/
----
+// Fetch Substack RSS -> write _data/substack.json
+// Requires: node >=18
+import fs from 'node:fs/promises';
 
-<!-- AGORA: essays & dispatches -->
-<section class="agora">
-  <div class="text-center mb-8">
-    <div class="inline-flex items-center gap-3 mb-3">
-      <span class="rounded-full" style="display:grid;place-items:center;width:48px;height:48px;background:linear-gradient(135deg,#fbbf24,#f97316);border:1px solid rgba(255,255,255,.2);">
-        <i data-lucide="users" style="width:22px;height:22px;color:#fff"></i>
-      </span>
-      <h1 class="font-serif" style="font-size:2rem;font-weight:700">The Agora</h1>
-    </div>
-    <p style="opacity:.8">Essays &amp; dispatches from the intersection of faith and inquiry</p>
-  </div>
+const FEED_URL = 'https://waypointinstitute.substack.com/feed';
 
-  <!-- Substack subscribe (swap src for your publication if you want the real one) -->
-  <div class="card" style="max-width:540px;margin:0 auto 2rem">
-    <div style="text-align:center">
-      <i data-lucide="book-open" style="width:28px;height:28px;"></i>
-      <h3 style="margin:.5rem 0 0">Stay Connected</h3>
-      <p style="opacity:.8;margin:.25rem 0 1rem">Get our latest insights delivered to your inbox</p>
-      <iframe src="https://substack.com/embed" style="background:#111;width:100%;max-width:100%;height:120px;border:1px solid #222;border-radius:8px" frameborder="0" scrolling="no"></iframe>
-    </div>
-  </div>
+async function main() {
+  const res = await fetch(FEED_URL, {
+    headers: {
+      // Pretend to be a browser; Substack 403s generic bots
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123 Safari/537.36',
+      'Accept': 'application/rss+xml, application/xml;q=0.9, */*;q=0.8'
+    }
+  });
+  if (!res.ok) throw new Error(`RSS fetch failed: ${res.status} ${res.statusText}`);
+  const xml = await res.text();
 
-  <!-- Search -->
-  <div class="card" style="margin-bottom:1rem">
-    <div style="position:relative">
-      <i data-lucide="search" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);width:18px;height:18px;opacity:.6"></i>
-      <input id="agora-search" placeholder="Search essays and dispatches…" style="width:100%;padding:.65rem .75rem .65rem 2rem;background:#111;border:1px solid #222;border-radius:10px;color:#e8e8ec" />
-    </div>
-    <div id="agora-tags" style="display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.75rem"></div>
-  </div>
+  // Tiny XML parse (no deps): grab items
+  const items = Array.from(xml.matchAll(/<item>([\s\S]*?)<\/item>/g)).map(m => {
+    const chunk = m[1];
+    const take = (tag) => (chunk.match(new RegExp(`<${tag}>([\\s\\S]*?)<\\/${tag}>`))||[])[1]?.trim() || '';
+    const cdata = (s) => s.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, '$1');
+    return {
+      title: cdata(take('title')),
+      link: cdata(take('link')),
+      pubDate: take('pubDate'),
+      // Substack puts full HTML in content:encoded
+      content_html: cdata((chunk.match(/<content:encoded>([\s\S]*?)<\/content:encoded>/)||[])[1] || ''),
+      description: cdata(take('description'))
+    };
+  });
 
-  <!-- Featured -->
-  <div id="agora-featured" class="card" style="margin-bottom:1.25rem;display:none"></div>
+  const out = { source: FEED_URL, updated_at: new Date().toISOString(), items };
+  await fs.mkdir('_data', { recursive: true });
+  await fs.writeFile('_data/substack.json', JSON.stringify(out, null, 2), 'utf8');
+  console.log(`Wrote _data/substack.json with ${items.length} items`);
+}
 
-  <!-- Grid -->
-  <div id="agora-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem"></div>
-</section>
-
-<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-
-<!-- Serialize essays from the Jekyll collection into JS -->
-<script>
-  window.AGORA_POSTS = [
-    {% assign posts = site.essays | sort: 'date' | reverse %}
-    {% for p in posts %}
-      {
-        id: {{ forloop.index }},
-        title: {{ p.title | jsonify }},
-        url: {{ p.url | relative_url | jsonify }},
-        date: {{ p.date | date: "%Y-%m-%d" | jsonify }},
-        summary: {{ p.excerpt | strip_html | strip | jsonify }},
-        tags: {{ p.tags | default: empty | jsonify }},
-        featured: {{ p.featured | default: false | jsonify }}
-      }{% unless forloop.last %},{% endunless %}
-    {% endfor %}
-  ];
-</script>
-
-<script src="{{ '/assets/js/agora.js' | relative_url }}"></script>
+main().catch(err => { console.error(err); process.exit(1); });
