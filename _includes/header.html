@@ -1,6 +1,13 @@
-
 <header class="site-header">
   <div class="container">
-    <a class="site-brand" href="{{ '/' | relative_url }}">Waypoint Institute</a>
+    <!-- Brand always points to Explore -->
+    <a class="site-brand" href="{{ '/explore/' | relative_url }}">Waypoint Institute</a>
 
-<li><a href="{{ '/explore/' | relative_url }}">Explore</a></li>
+    <!-- Show the single Explore button on all pages EXCEPT Explore -->
+    {% unless page.url == '/explore/' %}
+      <nav class="site-nav">
+        <a class="pill pill-explore" href="{{ '/explore/' | relative_url }}">Explore</a>
+      </nav>
+    {% endunless %}
+  </div>
+</header>
