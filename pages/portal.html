@@ -14,14 +14,6 @@ permalink: /portal/
     </div>
     <p style="opacity:.8">Share your sacred encounters to advance our understanding.</p>
   </div>
-<div class="card" style="margin:1rem auto;max-width:720px">
-  <p class="muted" style="margin:.25rem 0 .75rem">
-    Submissions are currently collected via Google Forms and stored in Google Sheets.
-  </p>
-  <a id="portal-gform-link" class="btn" href="#" target="_blank" rel="noopener">
-    Open the Submission Form
-  </a>
-</div>
 
   <!-- Progress -->
   <div class="card" style="margin-bottom:1rem">
@@ -164,27 +156,26 @@ permalink: /portal/
       <p class="muted">If you opted in, anonymized excerpts may appear in research summaries.</p>
       <div class="actions">
         <a class="btn-outline" href="{{ '/atrium/' | relative_url }}">See aggregate insights</a>
-        <a class="btn" href="{{ '/hub/' | relative_url }}">Return to Hub</a>
+        <a class="btn" href="{{ '/explore/' | relative_url }}">Return to Hub</a>
       </div>
     </div>
   </div>
 </section>
 
-<!-- config: set endpoint to use Formspree/Basin/etc., or leave blank for CSV download -->
+<!-- CONFIG: point directly to your Google Apps Script Web App URL -->
 <script>
   window.PORTAL_CONFIG = {
-    endpoint: "",        // e.g., "https://formspree.io/f/yourid"  (leave "" to download CSV instead)
-    method: "POST"
+    // 🔽 REPLACE this with your deployed Apps Script "Web app" URL (ends with /exec)
+    endpoint: "https://script.google.com/macros/s/AKfycbzESUZR_KpgB-TYPf2RRN9No07Nd9UnxD33w2Axscls4e33Z0FGO8F7gGhAlYMDP3U1/exec",
+    method: "POST",
+
+    // Helps if your workspace blocks CORS; portal.js will include these if present
+    fetchOptions: { mode: "no-cors" }
+
+    // If you still want to show an external fallback (Google Form),
+    // add: externalFormUrl: "https://forms.gle/your-form-id"
   };
 </script>
 
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 <script src="{{ '/assets/js/portal.js' | relative_url }}"></script>
-
-<script>
-  window.PORTAL_CONFIG = {
-    endpoint: "",              // keep blank (no JSON post)
-    method: "POST",
-    externalFormUrl: "https://docs.google.com/forms/d/e/PLACEHOLDER/viewform"  // <-- replace when ready
-  };
-</script>
