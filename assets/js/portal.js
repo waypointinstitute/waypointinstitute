@@ -1,135 +1,157 @@
-(function(){
-  if (window.lucide) window.lucide.createIcons();
-  const CFG = window.PORTAL_CONFIG || {};
-  const gLink = document.getElementById('portal-gform-link');
-  if (gLink && CFG.externalFormUrl) gLink.href = CFG.externalFormUrl;
+// assets/js/portal.js
+(function () {
+  // --- helpers --------------------------------------------------------------
+  const $ = (sel, root = document) => root.querySelector(sel);
+  const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+  const panels = $$(".panel");
+  const pills  = $$("[data-step-pill]");
+  const byPanel = n => $(`.panel[data-panel="${n}"]`);
+  const byPill  = n => $(`[data-step-pill="${n}"]`);
 
-  // Panels
-  const panels = ['consent','survey','narrative','complete'];
-  let current = 'consent';
-
-  const $ = (sel) => document.querySelector(sel);
-  const panel = (id) => document.querySelector(`.panel[data-panel="${id}"]`);
-  const pill  = (id) => document.querySelector(`.step-pill[data-step-pill="${id}"]`);
-
-  // Form state
-  const state = {
-    consent_research_use: false,
-    consent_public_excerpt: false,
-    age_bracket: "",
-    sex: "",
-    religiosity: "",
-    tradition: "",
-    context: "",
-    intensity: "",
-    duration_minutes: "",
-    country: "",
-    narrative_text: ""
-  };
-
-  // Wire inputs
-  const bindCheck = (id, key) => {
-    const el = document.getElementById(id);
-    el?.addEventListener('change', () => {
-      state[key] = !!el.checked;
-      validate();
-    });
-  };
-  const bindInput = (id, key) => {
-    const el = document.getElementById(id);
-    el?.addEventListener('input', () => { state[key] = el.value.trim(); validate(); });
-    el?.addEventListener('change', () => { state[key] = el.value.trim(); validate(); });
-  };
-
-  bindCheck('consent_research_use','consent_research_use');
-  bindCheck('consent_public_excerpt','consent_public_excerpt');
-  ['age_bracket','sex','religiosity','tradition','context','country','intensity','duration_minutes','narrative_text']
-    .forEach(k => bindInput(k, k));
-
-  // Navigation
-  function show(id){
-    panels.forEach(p => panel(p).hidden = (p !== id));
-    current = id;
-    // progress pills
-    const idx = panels.indexOf(id);
-    panels.forEach((p,i) => {
-      const el = pill(p);
-      el?.classList.toggle('active', i === idx);
-      el?.classList.toggle('done',   i <  idx);
-    });
+  function gotoPanel(name) {
+    panels.forEach(p => p.hidden = p.dataset.panel !== name);
+    updateStepper(name);
+    // scroll the active card into view (handy on mobile)
+    const card = $("#portal-card");
+    if (card) card.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
-  $('#next-to-survey')?.addEventListener('click', () => show('survey'));
-  $('#back-to-consent')?.addEventListener('click', () => show('consent'));
-  $('#next-to-narrative')?.addEventListener('click', () => show('narrative'));
-  $('#back-to-survey')?.addEventListener('click', () => show('survey'));
+  function updateStepper(active) {
+    const order = ["consent", "survey", "narrative", "complete"];
+    pills.forEach(p => p.classList.remove("active", "done"));
 
-  // Validation
-  function validate(){
-    // consent gate
-    const canConsent = !!state.consent_research_use;
-    $('#next-to-survey').disabled = !canConsent;
-
-    // survey gate (min required)
-    const canSurvey = !!(state.age_bracket && state.sex && state.religiosity);
-    $('#next-to-narrative').disabled = !canSurvey;
-
-    // narrative gate (length > 50 chars)
-    const canSubmit = (state.narrative_text || '').trim().length > 50;
-    $('#submit-experience').disabled = !canSubmit;
-  }
-  validate();
-
-  // Submit
-  $('#submit-experience')?.addEventListener('click', async () => {
-    // normalize
-    const payload = {
-      ...state,
-      intensity: state.intensity ? parseInt(state.intensity,10) : null,
-      duration_minutes: state.duration_minutes ? parseInt(state.duration_minutes,10) : null,
-      created_date: new Date().toISOString()
-    };
-
-   // build payload object above this as you already do…
-const endpoint = (window.PORTAL_CONFIG && window.PORTAL_CONFIG.endpoint) || "";
-const method   = (window.PORTAL_CONFIG && window.PORTAL_CONFIG.method)   || "POST";
-
-if (endpoint) {
-  // prepare fetch options
-  const opts = {
-    method,
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
-  };
-  // allow config to override/extend (e.g., { mode: "no-cors" })
-  if (window.PORTAL_CONFIG && window.PORTAL_CONFIG.fetchOptions) {
-    Object.assign(opts, window.PORTAL_CONFIG.fetchOptions);
-  }
-
-  let delivered = false;
-  try {
-    const res = await fetch(endpoint, opts);
-
-    // In no-cors mode, responses are "opaque" (no status/ok). Treat that as success.
-    const opaque = res && res.type === "opaque";
-    if (opaque || (res && res.ok)) {
-      delivered = true;
-    } else {
-      // If we can read it and it's not ok, consider it a fail.
-      delivered = false;
+    for (const id of order) {
+      if (id === active) { byPill(id)?.classList.add("active"); break; }
+      byPill(id)?.classList.add("done");
     }
-  } catch (e) {
-    delivered = false;
   }
 
-  if (delivered) {
-    // advance to Thank You panel without showing the "fall back" alert
-    gotoPanel("complete");
-    updateStepper("complete");
-    return;
+  // --- UI enable/disable rules ---------------------------------------------
+  function validateConsent() {
+    const ok = $("#consent_research_use")?.checked === true;
+    $("#next-to-survey").disabled = !ok;
   }
 
-  // If delivery failed, drop through to CSV fallback…
-}
+  function validateSurvey() {
+    const req = [
+      $("#age_bracket")?.value,
+      $("#sex")?.value,
+      $("#religiosity")?.value
+    ].every(Boolean);
+    $("#next-to-narrative").disabled = !req;
+  }
 
-// existing CSV fallback logic continues here (unchanged)
+  function validateNarrative() {
+    const txt = ($("#narrative_text")?.value || "").trim();
+    // keep it permissive; you can raise the threshold later
+    $("#submit-experience").disabled = (txt.length < 10);
+  }
+
+  // --- CSV fallback ---------------------------------------------------------
+  function downloadCSV(obj) {
+    const headers = Object.keys(obj);
+    const row = headers.map(h =>
+      `"${String(obj[h] ?? "").replace(/"/g, '""')}"`
+    ).join(",");
+    const csv = headers.join(",") + "\n" + row + "\n";
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `waypoint_portal_${Date.now()}.csv`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+
+  // --- submit to endpoint (Apps Script) ------------------------------------
+  async function submitPayload(payload) {
+    const cfg = window.PORTAL_CONFIG || {};
+    const endpoint = cfg.endpoint || "";
+    const method   = cfg.method || "POST";
+
+    if (!endpoint) return { ok: false, reason: "no-endpoint" };
+
+    const opts = {
+      method,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    };
+    // allow no-cors or other overrides
+    if (cfg.fetchOptions) Object.assign(opts, cfg.fetchOptions);
+
+    try {
+      const res = await fetch(endpoint, opts);
+      // In no-cors, res.type === "opaque" (no status/ok). Treat that as success.
+      if (res?.ok || res?.type === "opaque") return { ok: true };
+      return { ok: false, reason: "bad-status" };
+    } catch (e) {
+      return { ok: false, reason: "network" };
+    }
+  }
+
+  // --- main wiring ----------------------------------------------------------
+  function wireUp() {
+    // external form link (optional)
+    const link = $("#portal-gform-link");
+    const externalUrl = (window.PORTAL_CONFIG && window.PORTAL_CONFIG.externalFormUrl) || "";
+    if (link) {
+      if (externalUrl) link.href = externalUrl;
+      else link.parentElement?.remove(); // remove the whole card if unused
+    }
+
+    // step 1: consent
+    $("#consent_research_use")?.addEventListener("change", validateConsent);
+    $("#consent_public_excerpt")?.addEventListener("change", validateConsent);
+    $("#next-to-survey")?.addEventListener("click", () => gotoPanel("survey"));
+
+    // step 2: survey fields
+    ["#age_bracket","#sex","#religiosity","#tradition","#context","#country","#intensity","#duration_minutes"]
+      .forEach(sel => $(sel)?.addEventListener("input", validateSurvey));
+    $("#back-to-consent")?.addEventListener("click", () => gotoPanel("consent"));
+    $("#next-to-narrative")?.addEventListener("click", () => gotoPanel("narrative"));
+
+    // step 3: narrative
+    $("#narrative_text")?.addEventListener("input", validateNarrative);
+    $("#back-to-survey")?.addEventListener("click", () => gotoPanel("survey"));
+
+    // submit
+    $("#submit-experience")?.addEventListener("click", async () => {
+      const payload = {
+        timestamp: new Date().toISOString(),
+        consent_research_use: $("#consent_research_use")?.checked || false,
+        consent_public_excerpt: $("#consent_public_excerpt")?.checked || false,
+        age_bracket: $("#age_bracket")?.value || "",
+        sex: $("#sex")?.value || "",
+        religiosity: $("#religiosity")?.value || "",
+        tradition: $("#tradition")?.value || "",
+        context: $("#context")?.value || "",
+        country: $("#country")?.value || "",
+        intensity: $("#intensity")?.value || "",
+        duration_minutes: $("#duration_minutes")?.value || "",
+        narrative_text: $("#narrative_text")?.value || "",
+        ua: navigator.userAgent
+      };
+
+      const res = await submitPayload(payload);
+      if (res.ok) {
+        gotoPanel("complete");
+      } else {
+        // fallback
+        downloadCSV(payload);
+        alert("Submission failed. A file with your responses was downloaded as backup.");
+      }
+    });
+
+    // initial state
+    validateConsent();
+    validateSurvey();
+    validateNarrative();
+    gotoPanel("consent");
+  }
+
+  // run
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", wireUp);
+  } else {
+    wireUp();
+  }
+})();
