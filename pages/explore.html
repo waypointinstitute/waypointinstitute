@@ -132,87 +132,56 @@ permalink: /explore/
 }
 
 
-<script>
-const DESTS = [
-  { id:"pathways",     label:"Pathways",     href:"{{ '/pathways/'     | relative_url }}", icon:"🗺️" },
-  { id:"scriptorium",  label:"Scriptorium",  href:"{{ '/scriptorium/'  | relative_url }}", icon:"📖" },
-  { id:"atrium",       label:"Atrium",       href:"{{ '/atrium/'       | relative_url }}", icon:"📊" },
-  { id:"portal",       label:"Portal",       href:"{{ '/portal/'       | relative_url }}", icon:"✨" },
-  { id:"workshop",     label:"Workshop",     href:"#",                                        icon:"🛠️" },
-  { id:"observatory",  label:"Observatory",  href:"#",                                        icon:"⭐" },
-  { id:"agora",        label:"Agora",        href:"{{ '/agora/'        | relative_url }}", icon:"👥" },
-  { id:"concept-lab",  label:"Concept Lab",  href:"{{ '/concept-lab/'  | relative_url }}", icon:"🧪" },
-];
-
-(function initHub(){
-  const list   = document.getElementById('hub-orbs');
-  const wrap   = document.querySelector('.hub-wrap');
-  const logo   = document.querySelector('.hub-logo');
+function layout(){
+  const wrap = document.querySelector('.hub-wrap');
+  const logo = document.querySelector('.hub-logo');
   const spokes = document.querySelector('.hub-spokes');
+  const list = document.getElementById('hub-orbs');
 
-  // build DOM
-  DESTS.forEach(d => {
-    const li = document.createElement('li');
-    li.className = 'hub-orb' + (d.href === '#' ? ' hub-orb--disabled' : '');
-    li.innerHTML = `
-      <a href="${d.href}">
-        <span class="hub-icon">${d.icon}</span>
-        <span class="hub-label">${d.label}</span>
-      </a>`;
-    list.appendChild(li);
+  if (!wrap || !logo || !list) return;
+
+  const wrapRect = wrap.getBoundingClientRect();
+  const logoRect = logo.getBoundingClientRect();
+
+  // Center = actual center of the logo inside the wrap
+  const cx = wrapRect.width / 2;
+  const cy = (logoRect.top - wrapRect.top) + (logoRect.height * 0.50);
+
+  // Radius from the logo size (sits just outside the dotted ring)
+  const baseR = Math.min(logoRect.width, logoRect.height) * 0.62;
+  const isDesktop = window.matchMedia('(min-width:900px)').matches;
+  const r = Math.max(130, Math.min(baseR * (isDesktop ? 1.04 : 1.00), 320));
+
+  // Start at top (-90°), move clockwise in 45° steps
+  const angles = Array.from({ length: 8 }, (_, i) => (-90 + i * 45) * (Math.PI / 180));
+
+  // Position nodes
+  const nodes = Array.from(list.children);
+  nodes.forEach((li, i) => {
+    const a = angles[i];
+    const x = Math.cos(a) * r;
+    const y = Math.sin(a) * r;
+    li.style.transform = `translate(${(cx + x)}px, ${(cy + y)}px) translate(-50%, -50%)`;
   });
 
-  function layout(){
-    const wrapRect = wrap.getBoundingClientRect();
-    const logoRect = logo.getBoundingClientRect();
+  // Draw spokes from center to each orb (SVG works in % coordinates)
+  spokes.setAttribute('viewBox', '0 0 100 100');
+  spokes.innerHTML = '';
+  angles.forEach(a => {
+    const x = Math.cos(a) * r;
+    const y = Math.sin(a) * r;
+    const x2 = ((cx + x) / wrapRect.width) * 100;
+    const y2 = ((cy + y) / wrapRect.height) * 100;
+    const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+    line.setAttribute('x1', '50'); line.setAttribute('y1', '50');
+    line.setAttribute('x2', x2.toFixed(3)); line.setAttribute('y2', y2.toFixed(3));
+    line.setAttribute('stroke', 'rgba(90,165,255,.28)');
+    line.setAttribute('stroke-width', '.5');
+    line.setAttribute('stroke-dasharray', '1.2 1.4');
+    spokes.appendChild(line);
+  });
+}
 
-    // Read manual center nudges (defaults 50/50)
-    const biasX = parseFloat(logo.dataset.centerX || '50') / 100; // 0..1
-    const biasY = parseFloat(logo.dataset.centerY || '50') / 100;
-
-    // Center of the *art* inside the logo box
-    const cx = (logoRect.left - wrapRect.left) + logoRect.width  * biasX;
-    const cy = (logoRect.top  - wrapRect.top ) + logoRect.height * biasY;
-
-    // Radius tied to logo size; clamp for responsiveness
-    const baseR = Math.min(logoRect.width, logoRect.height) * 0.52;
-    const r = Math.max(130, Math.min(baseR, 260));
-
-    // 8 compass angles, start at top (-90°)
-    const angles = Array.from({length:8}, (_,i) => (-90 + i*45) * Math.PI/180);
-
-    // place orbs
-    Array.from(list.children).forEach((li, i) => {
-      const a = angles[i];
-      const x = cx + Math.cos(a) * r;
-      const y = cy + Math.sin(a) * r;
-      li.style.left = `${x}px`;
-      li.style.top  = `${y}px`;
-      li.style.transform = 'translate(-50%, -50%)';
-    });
-
-    // draw spokes from the true center
-    spokes.innerHTML = '';
-    const cpx = (cx / wrapRect.width)  * 100;
-    const cpy = (cy / wrapRect.height) * 100;
-
-    angles.forEach(a => {
-      const x = cx + Math.cos(a) * r;
-      const y = cy + Math.sin(a) * r;
-      const x2 = (x / wrapRect.width)  * 100;
-      const y2 = (y / wrapRect.height) * 100;
-
-      const line = document.createElementNS('http://www.w3.org/2000/svg','line');
-      line.setAttribute('x1', cpx.toFixed(3));
-      line.setAttribute('y1', cpy.toFixed(3));
-      line.setAttribute('x2', x2.toFixed(3));
-      line.setAttribute('y2', y2.toFixed(3));
-      line.setAttribute('stroke','rgba(90,165,255,.28)');
-      line.setAttribute('stroke-width','.5');
-      line.setAttribute('stroke-dasharray','1.2 1.4');
-      spokes.appendChild(line);
-    });
-  }
 
   if (document.readyState === 'complete') layout();
   else window.addEventListener('load', layout);
