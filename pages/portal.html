@@ -165,17 +165,13 @@ permalink: /portal/
 <!-- CONFIG: point directly to your Google Apps Script Web App URL -->
 <script>
   window.PORTAL_CONFIG = {
-    // 🔽 REPLACE this with your deployed Apps Script "Web app" URL (ends with /exec)
-    endpoint: "https://script.google.com/macros/s/AKfycbzESUZR_KpgB-TYPf2RRN9No07Nd9UnxD33w2Axscls4e33Z0FGO8F7gGhAlYMDP3U1/exec",
+    endpoint: "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec",
     method: "POST",
-
-    // Helps if your workspace blocks CORS; portal.js will include these if present
-    fetchOptions: { mode: "no-cors" }
-
-    // If you still want to show an external fallback (Google Form),
-    // add: externalFormUrl: "https://forms.gle/your-form-id"
+    fetchOptions: { mode: "no-cors" },
+    externalFormUrl: ""  // or your Google Form URL, or leave "" to hide that card
   };
 </script>
+
 
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 <script src="{{ '/assets/js/portal.js' | relative_url }}"></script>
