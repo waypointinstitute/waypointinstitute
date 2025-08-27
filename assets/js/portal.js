@@ -11,7 +11,6 @@
   function gotoPanel(name) {
     panels.forEach(p => p.hidden = p.dataset.panel !== name);
     updateStepper(name);
-    // scroll the active card into view (handy on mobile)
     const card = $("#portal-card");
     if (card) card.scrollIntoView({ behavior: "smooth", block: "start" });
   }
@@ -19,7 +18,6 @@
   function updateStepper(active) {
     const order = ["consent", "survey", "narrative", "complete"];
     pills.forEach(p => p.classList.remove("active", "done"));
-
     for (const id of order) {
       if (id === active) { byPill(id)?.classList.add("active"); break; }
       byPill(id)?.classList.add("done");
@@ -43,7 +41,6 @@
 
   function validateNarrative() {
     const txt = ($("#narrative_text")?.value || "").trim();
-    // keep it permissive; you can raise the threshold later
     $("#submit-experience").disabled = (txt.length < 10);
   }
 
@@ -63,26 +60,27 @@
   }
 
   // --- submit to endpoint (Apps Script) ------------------------------------
+  // Sends application/x-www-form-urlencoded to avoid an OPTIONS preflight.
   async function submitPayload(payload) {
     const cfg = window.PORTAL_CONFIG || {};
     const endpoint = cfg.endpoint || "";
-    const method   = cfg.method || "POST";
-
     if (!endpoint) return { ok: false, reason: "no-endpoint" };
 
-    const opts = {
-      method,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    };
-    // allow no-cors or other overrides
-    if (cfg.fetchOptions) Object.assign(opts, cfg.fetchOptions);
+    const formBody = new URLSearchParams();
+    Object.entries(payload).forEach(([k, v]) => {
+      // Coerce booleans to "true"/"false" so Sheets shows something readable
+      formBody.append(k, typeof v === "boolean" ? String(v) : (v ?? ""));
+    });
 
     try {
-      const res = await fetch(endpoint, opts);
-      // In no-cors, res.type === "opaque" (no status/ok). Treat that as success.
-      if (res?.ok || res?.type === "opaque") return { ok: true };
-      return { ok: false, reason: "bad-status" };
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+        body: formBody.toString()
+      });
+      // Apps Script responds 200 on success; treat non-2xx as failure
+      if (res && res.ok) return { ok: true };
+      return { ok: false, reason: `bad-status:${res?.status || "?"}` };
     } catch (e) {
       return { ok: false, reason: "network" };
     }
@@ -95,7 +93,7 @@
     const externalUrl = (window.PORTAL_CONFIG && window.PORTAL_CONFIG.externalFormUrl) || "";
     if (link) {
       if (externalUrl) link.href = externalUrl;
-      else link.parentElement?.remove(); // remove the whole card if unused
+      else link.parentElement?.remove();
     }
 
     // step 1: consent
@@ -114,7 +112,10 @@
     $("#back-to-survey")?.addEventListener("click", () => gotoPanel("survey"));
 
     // submit
-    $("#submit-experience")?.addEventListener("click", async () => {
+    $("#submit-experience")?.addEventListener("click", async (ev) => {
+      const btn = ev.currentTarget;
+      btn.disabled = true;
+
       const payload = {
         timestamp: new Date().toISOString(),
         consent_research_use: $("#consent_research_use")?.checked || false,
@@ -135,10 +136,11 @@
       if (res.ok) {
         gotoPanel("complete");
       } else {
-        // fallback
         downloadCSV(payload);
-        alert("Submission failed. A file with your responses was downloaded as backup.");
+        alert("Submission couldn’t reach the server. A CSV backup was downloaded.");
       }
+
+      btn.disabled = false;
     });
 
     // initial state
