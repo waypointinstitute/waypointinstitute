@@ -6,15 +6,15 @@ permalink: /explore/
 
 <main class="explore-hub">
   <section class="hub-wrap">
-    <!-- Transparent logo (cache-busted on deploy) -->
-    <img class="hub-logo" src="{{ '/assets/logo.png?v=' | append: site.github.build_revision | relative_url }}" alt="Waypoint Institute logo"
-      data-center-x="47"
-      data-center-y="46">
+    <!-- Transparent logo (cache-busted) -->
+    <img class="hub-logo"
+         src="{{ '/assets/logo.png?v=' | append: site.github.build_revision | relative_url }}"
+         alt="Waypoint Institute logo">
 
-    <!-- Spokes (drawn from the logo center) -->
+    <!-- Spokes drawn from the logo center -->
     <svg class="hub-spokes" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg>
 
-    <!-- Orbs -->
+    <!-- Orbs list (populated by JS) -->
     <ul class="hub-orbs" id="hub-orbs"></ul>
 
     <p class="hub-tagline">Choose a star to begin your journey</p>
@@ -31,11 +31,10 @@ permalink: /explore/
   width:min(540px,92vw);
   display:block; margin:0 auto 1.5rem;
   filter:drop-shadow(0 8px 24px rgba(0,0,0,.35));
-  pointer-events:none; /* clicking through is nicer when orbs overlap */
-  user-select:none;
+  pointer-events:none; user-select:none;
 }
 
-/* Spokes */
+/* Spokes layer */
 .hub-spokes{
   position:absolute; inset:0; width:100%; height:100%;
   pointer-events:none; z-index:1;
@@ -45,7 +44,7 @@ permalink: /explore/
 .hub-orbs{
   position:absolute; inset:0;
   list-style:none; margin:0; padding:0;
-  pointer-events:none; z-index:2; /* on top of spokes/logo */
+  pointer-events:none; z-index:2;
 }
 
 /* Single orb */
@@ -66,7 +65,7 @@ permalink: /explore/
 .hub-icon{ font-size:1.3rem; line-height:1 }
 .hub-label{ font-size:.85rem; font-weight:600; letter-spacing:.01em }
 
-/* Disabled placeholders */
+/* Disabled placeholders (no click) */
 .hub-orb--disabled a{
   background:#1f2937; color:#a7b1c2;
   border-color:rgba(255,255,255,.10);
@@ -85,7 +84,7 @@ permalink: /explore/
 /* Tagline */
 .hub-tagline{ color:#a7c7ff; opacity:.85; margin-top:1.75rem }
 
-/* Mobile fallback: grid under the logo */
+/* Mobile fallback: tidy grid under the logo */
 @media (max-width:760px){
   .hub-spokes{ display:none }
   .hub-orbs{
@@ -97,18 +96,17 @@ permalink: /explore/
   .hub-orb{ position:static; transform:none }
   .hub-wrap::before{ display:none }
 }
-/* Desktop: larger orbs; labels become hover-tooltips */
+
+/* Desktop: larger orbs + hover tooltips */
 @media (min-width: 900px) {
   .hub-orb a {
     position: relative;
-    width: 96px;             /* bigger orb */
+    width: 96px;
     height: 96px;
-    gap: 0;                  /* no inline label gap */
-    overflow: visible;       /* allow tooltip outside the circle */
+    gap: 0;
+    overflow: visible;
   }
   .hub-icon { font-size: 1.6rem; }
-
-  /* Turn the label into a tooltip */
   .hub-label {
     position: absolute;
     left: 50%;
@@ -118,10 +116,10 @@ permalink: /explore/
     border: 1px solid rgba(255,255,255,.15);
     border-radius: 8px;
     padding: .28rem .55rem;
-    white-space: nowrap;     /* prevent wrapping over the orb */
+    white-space: nowrap;
     box-shadow: 0 8px 16px rgba(0,0,0,.28);
     pointer-events: none;
-    opacity: 0;              /* hidden until hover/focus */
+    opacity: 0;
     transition: opacity .15s ease, transform .15s ease;
   }
   .hub-orb a:hover .hub-label,
@@ -130,29 +128,57 @@ permalink: /explore/
     transform: translate(-50%, .3rem);
   }
 }
+</style>
 
+<script>
+// 8 destinations (6 live + 2 placeholders)
+const DESTS = [
+  { id: "agora",        label: "Agora",        href: "{{ '/agora/'        | relative_url }}", icon: "👥" },
+  { id: "concept-lab",  label: "Concept Lab",  href: "{{ '/concept-lab/'  | relative_url }}", icon: "🧪" },
+  { id: "pathways",     label: "Pathways",     href: "{{ '/pathways/'     | relative_url }}", icon: "🗺️" },
+  { id: "scriptorium",  label: "Scriptorium",  href: "{{ '/scriptorium/'  | relative_url }}", icon: "📖" },
+  { id: "atrium",       label: "Atrium",       href: "{{ '/atrium/'       | relative_url }}", icon: "📊" },
+  { id: "portal",       label: "Portal",       href: "{{ '/portal/'       | relative_url }}", icon: "✨" },
+  // placeholders
+  { id: "observatory",  label: "Observatory",  href: "#", icon: "⭐", disabled: true },
+  { id: "workshop",     label: "Workshop",     href: "#", icon: "🛠️", disabled: true }
+];
+
+// Build the orbs
+(function buildOrbs(){
+  const list = document.getElementById('hub-orbs');
+  DESTS.forEach(d => {
+    const li = document.createElement('li');
+    li.className = 'hub-orb' + (d.disabled ? ' hub-orb--disabled' : '');
+    li.innerHTML = `
+      <a href="${d.href}">
+        <span class="hub-icon">${d.icon}</span>
+        <span class="hub-label">${d.label}</span>
+      </a>`;
+    list.appendChild(li);
+  });
+})();
 
 function layout(){
-  const wrap = document.querySelector('.hub-wrap');
-  const logo = document.querySelector('.hub-logo');
+  const wrap   = document.querySelector('.hub-wrap');
+  const logo   = document.querySelector('.hub-logo');
   const spokes = document.querySelector('.hub-spokes');
-  const list = document.getElementById('hub-orbs');
-
+  const list   = document.getElementById('hub-orbs');
   if (!wrap || !logo || !list) return;
 
   const wrapRect = wrap.getBoundingClientRect();
   const logoRect = logo.getBoundingClientRect();
 
-  // Center = actual center of the logo inside the wrap
+  // Center = center of the logo within the wrap
   const cx = wrapRect.width / 2;
   const cy = (logoRect.top - wrapRect.top) + (logoRect.height * 0.50);
 
-  // Radius from the logo size (sits just outside the dotted ring)
+  // Radius relative to logo size
   const baseR = Math.min(logoRect.width, logoRect.height) * 0.62;
   const isDesktop = window.matchMedia('(min-width:900px)').matches;
   const r = Math.max(130, Math.min(baseR * (isDesktop ? 1.04 : 1.00), 320));
 
-  // Start at top (-90°), move clockwise in 45° steps
+  // Angles: start at top (-90°), clockwise in 45° steps
   const angles = Array.from({ length: 8 }, (_, i) => (-90 + i * 45) * (Math.PI / 180));
 
   // Position nodes
@@ -164,7 +190,7 @@ function layout(){
     li.style.transform = `translate(${(cx + x)}px, ${(cy + y)}px) translate(-50%, -50%)`;
   });
 
-  // Draw spokes from center to each orb (SVG works in % coordinates)
+  // Draw spokes (SVG percentage coords)
   spokes.setAttribute('viewBox', '0 0 100 100');
   spokes.innerHTML = '';
   angles.forEach(a => {
@@ -173,19 +199,17 @@ function layout(){
     const x2 = ((cx + x) / wrapRect.width) * 100;
     const y2 = ((cy + y) / wrapRect.height) * 100;
     const line = document.createElementNS('http://www.w3.org/2000/svg','line');
-    line.setAttribute('x1', '50'); line.setAttribute('y1', '50');
+    line.setAttribute('x1','50'); line.setAttribute('y1','50');
     line.setAttribute('x2', x2.toFixed(3)); line.setAttribute('y2', y2.toFixed(3));
-    line.setAttribute('stroke', 'rgba(90,165,255,.28)');
-    line.setAttribute('stroke-width', '.5');
-    line.setAttribute('stroke-dasharray', '1.2 1.4');
+    line.setAttribute('stroke','rgba(90,165,255,.28)');
+    line.setAttribute('stroke-width','.5');
+    line.setAttribute('stroke-dasharray','1.2 1.4');
     spokes.appendChild(line);
   });
 }
 
-
-  if (document.readyState === 'complete') layout();
-  else window.addEventListener('load', layout);
-  window.addEventListener('resize', layout);
-})();
+// Run after images load (logo size matters) and on resize
+if (document.readyState === 'complete') layout();
+else window.addEventListener('load', layout);
+window.addEventListener('resize', layout);
 </script>
-
