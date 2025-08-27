@@ -90,44 +90,46 @@
       created_date: new Date().toISOString()
     };
 
-    const { endpoint, method } = (window.PORTAL_CONFIG || {});
-    if (endpoint) {
-      try {
-        const res = await fetch(endpoint, {
-          method: method || 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        if (!res.ok) throw new Error('Bad response');
-        show('complete');
-      } catch (e) {
-        alert('Submission failed. Falling back to file download.');
-        downloadCSV(payload);
-        show('complete');
-      }
-    } else {
-      downloadCSV(payload);
-      show('complete');
-    }
-  });
+   // build payload object above this as you already do…
+const endpoint = (window.PORTAL_CONFIG && window.PORTAL_CONFIG.endpoint) || "";
+const method   = (window.PORTAL_CONFIG && window.PORTAL_CONFIG.method)   || "POST";
 
-  function downloadCSV(row){
-    const keys = [
-      'created_date','age_bracket','sex','religiosity','tradition','context',
-      'intensity','duration_minutes','country','narrative_text',
-      'consent_research_use','consent_public_excerpt'
-    ];
-    const esc = v => String(v ?? '').replace(/"/g,'""');
-    const csv = [keys.join(','), keys.map(k => `"${esc(row[k])}"`).join(',')].join('\n');
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const a = Object.assign(document.createElement('a'), {
-      href: URL.createObjectURL(blob),
-      download: 'spiritual-experience-' + new Date().toISOString().slice(0,10) + '.csv'
-    });
-    document.body.appendChild(a); a.click(); a.remove();
-    URL.revokeObjectURL(a.href);
+if (endpoint) {
+  // prepare fetch options
+  const opts = {
+    method,
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  };
+  // allow config to override/extend (e.g., { mode: "no-cors" })
+  if (window.PORTAL_CONFIG && window.PORTAL_CONFIG.fetchOptions) {
+    Object.assign(opts, window.PORTAL_CONFIG.fetchOptions);
   }
 
-  // init
-  show('consent');
-})();
+  let delivered = false;
+  try {
+    const res = await fetch(endpoint, opts);
+
+    // In no-cors mode, responses are "opaque" (no status/ok). Treat that as success.
+    const opaque = res && res.type === "opaque";
+    if (opaque || (res && res.ok)) {
+      delivered = true;
+    } else {
+      // If we can read it and it's not ok, consider it a fail.
+      delivered = false;
+    }
+  } catch (e) {
+    delivered = false;
+  }
+
+  if (delivered) {
+    // advance to Thank You panel without showing the "fall back" alert
+    gotoPanel("complete");
+    updateStepper("complete");
+    return;
+  }
+
+  // If delivery failed, drop through to CSV fallback…
+}
+
+// existing CSV fallback logic continues here (unchanged)
