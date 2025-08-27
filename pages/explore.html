@@ -97,18 +97,18 @@ permalink: /explore/
   .hub-orb{ position:static; transform:none }
   .hub-wrap::before{ display:none }
 }
-</style>
-/* Desktop: make labels appear on hover as a tooltip, and grow the orbs */
+/* Desktop: larger orbs; labels become hover-tooltips */
 @media (min-width: 900px) {
   .hub-orb a {
     position: relative;
-    width: 96px;               /* bigger orb on desktop */
+    width: 96px;             /* bigger orb */
     height: 96px;
-    gap: 0;                    /* no gap—label becomes a tooltip */
+    gap: 0;                  /* no inline label gap */
+    overflow: visible;       /* allow tooltip outside the circle */
   }
   .hub-icon { font-size: 1.6rem; }
 
-  /* Tooltip labels */
+  /* Turn the label into a tooltip */
   .hub-label {
     position: absolute;
     left: 50%;
@@ -118,10 +118,10 @@ permalink: /explore/
     border: 1px solid rgba(255,255,255,.15);
     border-radius: 8px;
     padding: .28rem .55rem;
-    white-space: nowrap;       /* prevents wrapping */
+    white-space: nowrap;     /* prevent wrapping over the orb */
     box-shadow: 0 8px 16px rgba(0,0,0,.28);
     pointer-events: none;
-    opacity: 0;
+    opacity: 0;              /* hidden until hover/focus */
     transition: opacity .15s ease, transform .15s ease;
   }
   .hub-orb a:hover .hub-label,
@@ -130,6 +130,7 @@ permalink: /explore/
     transform: translate(-50%, .3rem);
   }
 }
+
 
 <script>
 const DESTS = [
