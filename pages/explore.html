@@ -22,6 +22,17 @@ permalink: /explore/
 </main>
 
 <style>
+/* layer order */
+.hub-logo{ position:relative; z-index:2; }     /* above spokes */
+.hub-spokes{ z-index:0; }                      /* behind logo */
+.hub-orbs{ z-index:3; }                        /* above both */
+.hub-wrap::before{ z-index:-1; }               /* glow at the very back */
+
+/* more vertical padding so top orbs have room */
+.explore-hub { padding: 4.5rem 1rem 4rem; }
+
+/* remove tagline */
+.hub-tagline { display:none; }
 /* Page container */
 .explore-hub { background:#0b0b0c; padding:2.5rem 1rem 4rem }
 .hub-wrap { position:relative; max-width:980px; margin:0 auto; text-align:center }
@@ -176,7 +187,8 @@ function layout(){
   // Radius relative to logo size
   const baseR = Math.min(logoRect.width, logoRect.height) * 0.62;
   const isDesktop = window.matchMedia('(min-width:900px)').matches;
-  const r = Math.max(130, Math.min(baseR * (isDesktop ? 1.04 : 1.00), 320));
+const r = Math.max(130, Math.min(baseR * (isDesktop ? 0.98 : 0.95), 300));
+
 
   // Angles: start at top (-90°), clockwise in 45° steps
   const angles = Array.from({ length: 8 }, (_, i) => (-90 + i * 45) * (Math.PI / 180));
